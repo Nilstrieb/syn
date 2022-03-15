@@ -68,7 +68,7 @@ fn ty_to_arbitrary(ty: &Type) -> TokenStream {
             quote! { Span::call_site() }
         }
         Type::Ext(name) if name.contains("Ident") => {
-            quote! { Ident::new(Arbitrary::arbitrary(u)?, Span::call_site()) }
+            quote! { Ident::new("test_ident", Span::call_site()) }
         }
         Type::Ext(name) if name.contains("TokenStream") => {
             quote! { quote::quote! {} }
