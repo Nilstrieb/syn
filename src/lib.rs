@@ -796,6 +796,10 @@ mod gen {
     #[rustfmt::skip]
     mod debug;
 
+    #[cfg(feature = "arbitrary")]
+    #[rustfmt::skip]
+    mod arbitrary;
+
     #[cfg(any(feature = "full", feature = "derive"))]
     #[path = "../gen_helper.rs"]
     mod helper;

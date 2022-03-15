@@ -50,6 +50,7 @@ ast_enum_of_structs! {
 
 ast_struct! {
     /// A UTF-8 string literal: `"foo"`.
+    #[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
     pub struct LitStr {
         repr: Box<LitRepr>,
     }
@@ -57,6 +58,7 @@ ast_struct! {
 
 ast_struct! {
     /// A byte string literal: `b"foo"`.
+    #[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
     pub struct LitByteStr {
         repr: Box<LitRepr>,
     }
@@ -64,6 +66,7 @@ ast_struct! {
 
 ast_struct! {
     /// A byte literal: `b'f'`.
+    #[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
     pub struct LitByte {
         repr: Box<LitRepr>,
     }
@@ -71,11 +74,13 @@ ast_struct! {
 
 ast_struct! {
     /// A character literal: `'a'`.
+    #[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
     pub struct LitChar {
         repr: Box<LitRepr>,
     }
 }
 
+#[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
 struct LitRepr {
     token: Literal,
     suffix: Box<str>,
@@ -83,6 +88,7 @@ struct LitRepr {
 
 ast_struct! {
     /// An integer literal: `1` or `1u16`.
+    #[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
     pub struct LitInt {
         repr: Box<LitIntRepr>,
     }
@@ -98,6 +104,7 @@ ast_struct! {
     /// A floating point literal: `1f64` or `1.0e10f64`.
     ///
     /// Must be finite. May not be infinite or NaN.
+    #[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
     pub struct LitFloat {
         repr: Box<LitFloatRepr>,
     }
