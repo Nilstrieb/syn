@@ -48,8 +48,9 @@ impl<'a> Arbitrary<'a> for AttrStyle {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 2u64) >> 32;
             match index {
-                0u64 => AttrStyle::Outer,
-                1u64 => AttrStyle::Inner(Arbitrary::arbitrary(u)?),
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => AttrStyle::Outer,
+                2u64 => AttrStyle::Inner(Arbitrary::arbitrary(u)?),
                 _ => unreachable!(),
             }
         })
@@ -91,34 +92,35 @@ impl<'a> Arbitrary<'a> for BinOp {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 28u64) >> 32;
             match index {
-                0u64 => BinOp::Add(Arbitrary::arbitrary(u)?),
-                1u64 => BinOp::Sub(Arbitrary::arbitrary(u)?),
-                2u64 => BinOp::Mul(Arbitrary::arbitrary(u)?),
-                3u64 => BinOp::Div(Arbitrary::arbitrary(u)?),
-                4u64 => BinOp::Rem(Arbitrary::arbitrary(u)?),
-                5u64 => BinOp::And(Arbitrary::arbitrary(u)?),
-                6u64 => BinOp::Or(Arbitrary::arbitrary(u)?),
-                7u64 => BinOp::BitXor(Arbitrary::arbitrary(u)?),
-                8u64 => BinOp::BitAnd(Arbitrary::arbitrary(u)?),
-                9u64 => BinOp::BitOr(Arbitrary::arbitrary(u)?),
-                10u64 => BinOp::Shl(Arbitrary::arbitrary(u)?),
-                11u64 => BinOp::Shr(Arbitrary::arbitrary(u)?),
-                12u64 => BinOp::Eq(Arbitrary::arbitrary(u)?),
-                13u64 => BinOp::Lt(Arbitrary::arbitrary(u)?),
-                14u64 => BinOp::Le(Arbitrary::arbitrary(u)?),
-                15u64 => BinOp::Ne(Arbitrary::arbitrary(u)?),
-                16u64 => BinOp::Ge(Arbitrary::arbitrary(u)?),
-                17u64 => BinOp::Gt(Arbitrary::arbitrary(u)?),
-                18u64 => BinOp::AddEq(Arbitrary::arbitrary(u)?),
-                19u64 => BinOp::SubEq(Arbitrary::arbitrary(u)?),
-                20u64 => BinOp::MulEq(Arbitrary::arbitrary(u)?),
-                21u64 => BinOp::DivEq(Arbitrary::arbitrary(u)?),
-                22u64 => BinOp::RemEq(Arbitrary::arbitrary(u)?),
-                23u64 => BinOp::BitXorEq(Arbitrary::arbitrary(u)?),
-                24u64 => BinOp::BitAndEq(Arbitrary::arbitrary(u)?),
-                25u64 => BinOp::BitOrEq(Arbitrary::arbitrary(u)?),
-                26u64 => BinOp::ShlEq(Arbitrary::arbitrary(u)?),
-                27u64 => BinOp::ShrEq(Arbitrary::arbitrary(u)?),
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => BinOp::Add(Arbitrary::arbitrary(u)?),
+                2u64 => BinOp::Sub(Arbitrary::arbitrary(u)?),
+                3u64 => BinOp::Mul(Arbitrary::arbitrary(u)?),
+                4u64 => BinOp::Div(Arbitrary::arbitrary(u)?),
+                5u64 => BinOp::Rem(Arbitrary::arbitrary(u)?),
+                6u64 => BinOp::And(Arbitrary::arbitrary(u)?),
+                7u64 => BinOp::Or(Arbitrary::arbitrary(u)?),
+                8u64 => BinOp::BitXor(Arbitrary::arbitrary(u)?),
+                9u64 => BinOp::BitAnd(Arbitrary::arbitrary(u)?),
+                10u64 => BinOp::BitOr(Arbitrary::arbitrary(u)?),
+                11u64 => BinOp::Shl(Arbitrary::arbitrary(u)?),
+                12u64 => BinOp::Shr(Arbitrary::arbitrary(u)?),
+                13u64 => BinOp::Eq(Arbitrary::arbitrary(u)?),
+                14u64 => BinOp::Lt(Arbitrary::arbitrary(u)?),
+                15u64 => BinOp::Le(Arbitrary::arbitrary(u)?),
+                16u64 => BinOp::Ne(Arbitrary::arbitrary(u)?),
+                17u64 => BinOp::Ge(Arbitrary::arbitrary(u)?),
+                18u64 => BinOp::Gt(Arbitrary::arbitrary(u)?),
+                19u64 => BinOp::AddEq(Arbitrary::arbitrary(u)?),
+                20u64 => BinOp::SubEq(Arbitrary::arbitrary(u)?),
+                21u64 => BinOp::MulEq(Arbitrary::arbitrary(u)?),
+                22u64 => BinOp::DivEq(Arbitrary::arbitrary(u)?),
+                23u64 => BinOp::RemEq(Arbitrary::arbitrary(u)?),
+                24u64 => BinOp::BitXorEq(Arbitrary::arbitrary(u)?),
+                25u64 => BinOp::BitAndEq(Arbitrary::arbitrary(u)?),
+                26u64 => BinOp::BitOrEq(Arbitrary::arbitrary(u)?),
+                27u64 => BinOp::ShlEq(Arbitrary::arbitrary(u)?),
+                28u64 => BinOp::ShrEq(Arbitrary::arbitrary(u)?),
                 _ => unreachable!(),
             }
         })
@@ -190,9 +192,10 @@ impl<'a> Arbitrary<'a> for Data {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 3u64) >> 32;
             match index {
-                0u64 => Data::Struct(Arbitrary::arbitrary(u)?),
-                1u64 => Data::Enum(Arbitrary::arbitrary(u)?),
-                2u64 => Data::Union(Arbitrary::arbitrary(u)?),
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => Data::Struct(Arbitrary::arbitrary(u)?),
+                2u64 => Data::Enum(Arbitrary::arbitrary(u)?),
+                3u64 => Data::Union(Arbitrary::arbitrary(u)?),
                 _ => unreachable!(),
             }
         })
@@ -250,52 +253,53 @@ impl<'a> Arbitrary<'a> for Expr {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 40u64) >> 32;
             match index {
-                0u64 => Expr::Array(Arbitrary::arbitrary(u)?),
-                1u64 => Expr::Assign(Arbitrary::arbitrary(u)?),
-                2u64 => Expr::AssignOp(Arbitrary::arbitrary(u)?),
-                3u64 => Expr::Async(Arbitrary::arbitrary(u)?),
-                4u64 => Expr::Await(Arbitrary::arbitrary(u)?),
-                5u64 => Expr::Binary(Arbitrary::arbitrary(u)?),
-                6u64 => Expr::Block(Arbitrary::arbitrary(u)?),
-                7u64 => Expr::Box(Arbitrary::arbitrary(u)?),
-                8u64 => Expr::Break(Arbitrary::arbitrary(u)?),
-                9u64 => Expr::Call(Arbitrary::arbitrary(u)?),
-                10u64 => Expr::Cast(Arbitrary::arbitrary(u)?),
-                11u64 => Expr::Closure(Arbitrary::arbitrary(u)?),
-                12u64 => Expr::Continue(Arbitrary::arbitrary(u)?),
-                13u64 => Expr::Field(Arbitrary::arbitrary(u)?),
-                14u64 => Expr::ForLoop(Arbitrary::arbitrary(u)?),
-                15u64 => Expr::Group(Arbitrary::arbitrary(u)?),
-                16u64 => Expr::If(Arbitrary::arbitrary(u)?),
-                17u64 => Expr::Index(Arbitrary::arbitrary(u)?),
-                18u64 => Expr::Let(Arbitrary::arbitrary(u)?),
-                19u64 => Expr::Lit(Arbitrary::arbitrary(u)?),
-                20u64 => Expr::Loop(Arbitrary::arbitrary(u)?),
-                21u64 => Expr::Macro(Arbitrary::arbitrary(u)?),
-                22u64 => Expr::Match(Arbitrary::arbitrary(u)?),
-                23u64 => Expr::MethodCall(Arbitrary::arbitrary(u)?),
-                24u64 => Expr::Paren(Arbitrary::arbitrary(u)?),
-                25u64 => Expr::Path(Arbitrary::arbitrary(u)?),
-                26u64 => Expr::Range(Arbitrary::arbitrary(u)?),
-                27u64 => Expr::Reference(Arbitrary::arbitrary(u)?),
-                28u64 => Expr::Repeat(Arbitrary::arbitrary(u)?),
-                29u64 => Expr::Return(Arbitrary::arbitrary(u)?),
-                30u64 => Expr::Struct(Arbitrary::arbitrary(u)?),
-                31u64 => Expr::Try(Arbitrary::arbitrary(u)?),
-                32u64 => Expr::TryBlock(Arbitrary::arbitrary(u)?),
-                33u64 => Expr::Tuple(Arbitrary::arbitrary(u)?),
-                34u64 => Expr::Type(Arbitrary::arbitrary(u)?),
-                35u64 => Expr::Unary(Arbitrary::arbitrary(u)?),
-                36u64 => Expr::Unsafe(Arbitrary::arbitrary(u)?),
-                37u64 => {
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => Expr::Array(Arbitrary::arbitrary(u)?),
+                2u64 => Expr::Assign(Arbitrary::arbitrary(u)?),
+                3u64 => Expr::AssignOp(Arbitrary::arbitrary(u)?),
+                4u64 => Expr::Async(Arbitrary::arbitrary(u)?),
+                5u64 => Expr::Await(Arbitrary::arbitrary(u)?),
+                6u64 => Expr::Binary(Arbitrary::arbitrary(u)?),
+                7u64 => Expr::Block(Arbitrary::arbitrary(u)?),
+                8u64 => Expr::Box(Arbitrary::arbitrary(u)?),
+                9u64 => Expr::Break(Arbitrary::arbitrary(u)?),
+                10u64 => Expr::Call(Arbitrary::arbitrary(u)?),
+                11u64 => Expr::Cast(Arbitrary::arbitrary(u)?),
+                12u64 => Expr::Closure(Arbitrary::arbitrary(u)?),
+                13u64 => Expr::Continue(Arbitrary::arbitrary(u)?),
+                14u64 => Expr::Field(Arbitrary::arbitrary(u)?),
+                15u64 => Expr::ForLoop(Arbitrary::arbitrary(u)?),
+                16u64 => Expr::Group(Arbitrary::arbitrary(u)?),
+                17u64 => Expr::If(Arbitrary::arbitrary(u)?),
+                18u64 => Expr::Index(Arbitrary::arbitrary(u)?),
+                19u64 => Expr::Let(Arbitrary::arbitrary(u)?),
+                20u64 => Expr::Lit(Arbitrary::arbitrary(u)?),
+                21u64 => Expr::Loop(Arbitrary::arbitrary(u)?),
+                22u64 => Expr::Macro(Arbitrary::arbitrary(u)?),
+                23u64 => Expr::Match(Arbitrary::arbitrary(u)?),
+                24u64 => Expr::MethodCall(Arbitrary::arbitrary(u)?),
+                25u64 => Expr::Paren(Arbitrary::arbitrary(u)?),
+                26u64 => Expr::Path(Arbitrary::arbitrary(u)?),
+                27u64 => Expr::Range(Arbitrary::arbitrary(u)?),
+                28u64 => Expr::Reference(Arbitrary::arbitrary(u)?),
+                29u64 => Expr::Repeat(Arbitrary::arbitrary(u)?),
+                30u64 => Expr::Return(Arbitrary::arbitrary(u)?),
+                31u64 => Expr::Struct(Arbitrary::arbitrary(u)?),
+                32u64 => Expr::Try(Arbitrary::arbitrary(u)?),
+                33u64 => Expr::TryBlock(Arbitrary::arbitrary(u)?),
+                34u64 => Expr::Tuple(Arbitrary::arbitrary(u)?),
+                35u64 => Expr::Type(Arbitrary::arbitrary(u)?),
+                36u64 => Expr::Unary(Arbitrary::arbitrary(u)?),
+                37u64 => Expr::Unsafe(Arbitrary::arbitrary(u)?),
+                38u64 => {
                     Expr::Verbatim(
                         quote::quote! {
 
                         },
                     )
                 }
-                38u64 => Expr::While(Arbitrary::arbitrary(u)?),
-                39u64 => Expr::Yield(Arbitrary::arbitrary(u)?),
+                39u64 => Expr::While(Arbitrary::arbitrary(u)?),
+                40u64 => Expr::Yield(Arbitrary::arbitrary(u)?),
                 _ => unreachable!(),
             }
         })
@@ -817,9 +821,10 @@ impl<'a> Arbitrary<'a> for Fields {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 3u64) >> 32;
             match index {
-                0u64 => Fields::Named(Arbitrary::arbitrary(u)?),
-                1u64 => Fields::Unnamed(Arbitrary::arbitrary(u)?),
-                2u64 => Fields::Unit,
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => Fields::Named(Arbitrary::arbitrary(u)?),
+                2u64 => Fields::Unnamed(Arbitrary::arbitrary(u)?),
+                3u64 => Fields::Unit,
                 _ => unreachable!(),
             }
         })
@@ -863,8 +868,9 @@ impl<'a> Arbitrary<'a> for FnArg {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 2u64) >> 32;
             match index {
-                0u64 => FnArg::Receiver(Arbitrary::arbitrary(u)?),
-                1u64 => FnArg::Typed(Arbitrary::arbitrary(u)?),
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => FnArg::Receiver(Arbitrary::arbitrary(u)?),
+                2u64 => FnArg::Typed(Arbitrary::arbitrary(u)?),
                 _ => unreachable!(),
             }
         })
@@ -877,11 +883,12 @@ impl<'a> Arbitrary<'a> for ForeignItem {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 5u64) >> 32;
             match index {
-                0u64 => ForeignItem::Fn(Arbitrary::arbitrary(u)?),
-                1u64 => ForeignItem::Static(Arbitrary::arbitrary(u)?),
-                2u64 => ForeignItem::Type(Arbitrary::arbitrary(u)?),
-                3u64 => ForeignItem::Macro(Arbitrary::arbitrary(u)?),
-                4u64 => {
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => ForeignItem::Fn(Arbitrary::arbitrary(u)?),
+                2u64 => ForeignItem::Static(Arbitrary::arbitrary(u)?),
+                3u64 => ForeignItem::Type(Arbitrary::arbitrary(u)?),
+                4u64 => ForeignItem::Macro(Arbitrary::arbitrary(u)?),
+                5u64 => {
                     ForeignItem::Verbatim(
                         quote::quote! {
 
@@ -952,11 +959,12 @@ impl<'a> Arbitrary<'a> for GenericArgument {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 5u64) >> 32;
             match index {
-                0u64 => GenericArgument::Lifetime(Arbitrary::arbitrary(u)?),
-                1u64 => GenericArgument::Type(Arbitrary::arbitrary(u)?),
-                2u64 => GenericArgument::Binding(Arbitrary::arbitrary(u)?),
-                3u64 => GenericArgument::Constraint(Arbitrary::arbitrary(u)?),
-                4u64 => GenericArgument::Const(Arbitrary::arbitrary(u)?),
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => GenericArgument::Lifetime(Arbitrary::arbitrary(u)?),
+                2u64 => GenericArgument::Type(Arbitrary::arbitrary(u)?),
+                3u64 => GenericArgument::Binding(Arbitrary::arbitrary(u)?),
+                4u64 => GenericArgument::Constraint(Arbitrary::arbitrary(u)?),
+                5u64 => GenericArgument::Const(Arbitrary::arbitrary(u)?),
                 _ => unreachable!(),
             }
         })
@@ -969,8 +977,9 @@ impl<'a> Arbitrary<'a> for GenericMethodArgument {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 2u64) >> 32;
             match index {
-                0u64 => GenericMethodArgument::Type(Arbitrary::arbitrary(u)?),
-                1u64 => GenericMethodArgument::Const(Arbitrary::arbitrary(u)?),
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => GenericMethodArgument::Type(Arbitrary::arbitrary(u)?),
+                2u64 => GenericMethodArgument::Const(Arbitrary::arbitrary(u)?),
                 _ => unreachable!(),
             }
         })
@@ -983,9 +992,10 @@ impl<'a> Arbitrary<'a> for GenericParam {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 3u64) >> 32;
             match index {
-                0u64 => GenericParam::Type(Arbitrary::arbitrary(u)?),
-                1u64 => GenericParam::Lifetime(Arbitrary::arbitrary(u)?),
-                2u64 => GenericParam::Const(Arbitrary::arbitrary(u)?),
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => GenericParam::Type(Arbitrary::arbitrary(u)?),
+                2u64 => GenericParam::Lifetime(Arbitrary::arbitrary(u)?),
+                3u64 => GenericParam::Const(Arbitrary::arbitrary(u)?),
                 _ => unreachable!(),
             }
         })
@@ -1010,11 +1020,12 @@ impl<'a> Arbitrary<'a> for ImplItem {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 5u64) >> 32;
             match index {
-                0u64 => ImplItem::Const(Arbitrary::arbitrary(u)?),
-                1u64 => ImplItem::Method(Arbitrary::arbitrary(u)?),
-                2u64 => ImplItem::Type(Arbitrary::arbitrary(u)?),
-                3u64 => ImplItem::Macro(Arbitrary::arbitrary(u)?),
-                4u64 => {
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => ImplItem::Const(Arbitrary::arbitrary(u)?),
+                2u64 => ImplItem::Method(Arbitrary::arbitrary(u)?),
+                3u64 => ImplItem::Type(Arbitrary::arbitrary(u)?),
+                4u64 => ImplItem::Macro(Arbitrary::arbitrary(u)?),
+                5u64 => {
                     ImplItem::Verbatim(
                         quote::quote! {
 
@@ -1102,23 +1113,24 @@ impl<'a> Arbitrary<'a> for Item {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 17u64) >> 32;
             match index {
-                0u64 => Item::Const(Arbitrary::arbitrary(u)?),
-                1u64 => Item::Enum(Arbitrary::arbitrary(u)?),
-                2u64 => Item::ExternCrate(Arbitrary::arbitrary(u)?),
-                3u64 => Item::Fn(Arbitrary::arbitrary(u)?),
-                4u64 => Item::ForeignMod(Arbitrary::arbitrary(u)?),
-                5u64 => Item::Impl(Arbitrary::arbitrary(u)?),
-                6u64 => Item::Macro(Arbitrary::arbitrary(u)?),
-                7u64 => Item::Macro2(Arbitrary::arbitrary(u)?),
-                8u64 => Item::Mod(Arbitrary::arbitrary(u)?),
-                9u64 => Item::Static(Arbitrary::arbitrary(u)?),
-                10u64 => Item::Struct(Arbitrary::arbitrary(u)?),
-                11u64 => Item::Trait(Arbitrary::arbitrary(u)?),
-                12u64 => Item::TraitAlias(Arbitrary::arbitrary(u)?),
-                13u64 => Item::Type(Arbitrary::arbitrary(u)?),
-                14u64 => Item::Union(Arbitrary::arbitrary(u)?),
-                15u64 => Item::Use(Arbitrary::arbitrary(u)?),
-                16u64 => {
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => Item::Const(Arbitrary::arbitrary(u)?),
+                2u64 => Item::Enum(Arbitrary::arbitrary(u)?),
+                3u64 => Item::ExternCrate(Arbitrary::arbitrary(u)?),
+                4u64 => Item::Fn(Arbitrary::arbitrary(u)?),
+                5u64 => Item::ForeignMod(Arbitrary::arbitrary(u)?),
+                6u64 => Item::Impl(Arbitrary::arbitrary(u)?),
+                7u64 => Item::Macro(Arbitrary::arbitrary(u)?),
+                8u64 => Item::Macro2(Arbitrary::arbitrary(u)?),
+                9u64 => Item::Mod(Arbitrary::arbitrary(u)?),
+                10u64 => Item::Static(Arbitrary::arbitrary(u)?),
+                11u64 => Item::Struct(Arbitrary::arbitrary(u)?),
+                12u64 => Item::Trait(Arbitrary::arbitrary(u)?),
+                13u64 => Item::TraitAlias(Arbitrary::arbitrary(u)?),
+                14u64 => Item::Type(Arbitrary::arbitrary(u)?),
+                15u64 => Item::Union(Arbitrary::arbitrary(u)?),
+                16u64 => Item::Use(Arbitrary::arbitrary(u)?),
+                17u64 => {
                     Item::Verbatim(
                         quote::quote! {
 
@@ -1415,14 +1427,15 @@ impl<'a> Arbitrary<'a> for Lit {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 8u64) >> 32;
             match index {
-                0u64 => Lit::Str(Arbitrary::arbitrary(u)?),
-                1u64 => Lit::ByteStr(Arbitrary::arbitrary(u)?),
-                2u64 => Lit::Byte(Arbitrary::arbitrary(u)?),
-                3u64 => Lit::Char(Arbitrary::arbitrary(u)?),
-                4u64 => Lit::Int(Arbitrary::arbitrary(u)?),
-                5u64 => Lit::Float(Arbitrary::arbitrary(u)?),
-                6u64 => Lit::Bool(Arbitrary::arbitrary(u)?),
-                7u64 => Lit::Verbatim(Literal::string(&String::arbitrary(u)?)),
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => Lit::Str(Arbitrary::arbitrary(u)?),
+                2u64 => Lit::ByteStr(Arbitrary::arbitrary(u)?),
+                3u64 => Lit::Byte(Arbitrary::arbitrary(u)?),
+                4u64 => Lit::Char(Arbitrary::arbitrary(u)?),
+                5u64 => Lit::Int(Arbitrary::arbitrary(u)?),
+                6u64 => Lit::Float(Arbitrary::arbitrary(u)?),
+                7u64 => Lit::Bool(Arbitrary::arbitrary(u)?),
+                8u64 => Lit::Verbatim(Literal::string(&String::arbitrary(u)?)),
                 _ => unreachable!(),
             }
         })
@@ -1471,9 +1484,10 @@ impl<'a> Arbitrary<'a> for MacroDelimiter {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 3u64) >> 32;
             match index {
-                0u64 => MacroDelimiter::Paren(Arbitrary::arbitrary(u)?),
-                1u64 => MacroDelimiter::Brace(Arbitrary::arbitrary(u)?),
-                2u64 => MacroDelimiter::Bracket(Arbitrary::arbitrary(u)?),
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => MacroDelimiter::Paren(Arbitrary::arbitrary(u)?),
+                2u64 => MacroDelimiter::Brace(Arbitrary::arbitrary(u)?),
+                3u64 => MacroDelimiter::Bracket(Arbitrary::arbitrary(u)?),
                 _ => unreachable!(),
             }
         })
@@ -1486,8 +1500,9 @@ impl<'a> Arbitrary<'a> for Member {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 2u64) >> 32;
             match index {
-                0u64 => Member::Named(Ident::new("test_ident", Span::call_site())),
-                1u64 => Member::Unnamed(Arbitrary::arbitrary(u)?),
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => Member::Named(Ident::new("test_ident", Span::call_site())),
+                2u64 => Member::Unnamed(Arbitrary::arbitrary(u)?),
                 _ => unreachable!(),
             }
         })
@@ -1500,9 +1515,10 @@ impl<'a> Arbitrary<'a> for Meta {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 3u64) >> 32;
             match index {
-                0u64 => Meta::Path(Arbitrary::arbitrary(u)?),
-                1u64 => Meta::List(Arbitrary::arbitrary(u)?),
-                2u64 => Meta::NameValue(Arbitrary::arbitrary(u)?),
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => Meta::Path(Arbitrary::arbitrary(u)?),
+                2u64 => Meta::List(Arbitrary::arbitrary(u)?),
+                3u64 => Meta::NameValue(Arbitrary::arbitrary(u)?),
                 _ => unreachable!(),
             }
         })
@@ -1549,8 +1565,9 @@ impl<'a> Arbitrary<'a> for NestedMeta {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 2u64) >> 32;
             match index {
-                0u64 => NestedMeta::Meta(Arbitrary::arbitrary(u)?),
-                1u64 => NestedMeta::Lit(Arbitrary::arbitrary(u)?),
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => NestedMeta::Meta(Arbitrary::arbitrary(u)?),
+                2u64 => NestedMeta::Lit(Arbitrary::arbitrary(u)?),
                 _ => unreachable!(),
             }
         })
@@ -1574,28 +1591,29 @@ impl<'a> Arbitrary<'a> for Pat {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 16u64) >> 32;
             match index {
-                0u64 => Pat::Box(Arbitrary::arbitrary(u)?),
-                1u64 => Pat::Ident(Arbitrary::arbitrary(u)?),
-                2u64 => Pat::Lit(Arbitrary::arbitrary(u)?),
-                3u64 => Pat::Macro(Arbitrary::arbitrary(u)?),
-                4u64 => Pat::Or(Arbitrary::arbitrary(u)?),
-                5u64 => Pat::Path(Arbitrary::arbitrary(u)?),
-                6u64 => Pat::Range(Arbitrary::arbitrary(u)?),
-                7u64 => Pat::Reference(Arbitrary::arbitrary(u)?),
-                8u64 => Pat::Rest(Arbitrary::arbitrary(u)?),
-                9u64 => Pat::Slice(Arbitrary::arbitrary(u)?),
-                10u64 => Pat::Struct(Arbitrary::arbitrary(u)?),
-                11u64 => Pat::Tuple(Arbitrary::arbitrary(u)?),
-                12u64 => Pat::TupleStruct(Arbitrary::arbitrary(u)?),
-                13u64 => Pat::Type(Arbitrary::arbitrary(u)?),
-                14u64 => {
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => Pat::Box(Arbitrary::arbitrary(u)?),
+                2u64 => Pat::Ident(Arbitrary::arbitrary(u)?),
+                3u64 => Pat::Lit(Arbitrary::arbitrary(u)?),
+                4u64 => Pat::Macro(Arbitrary::arbitrary(u)?),
+                5u64 => Pat::Or(Arbitrary::arbitrary(u)?),
+                6u64 => Pat::Path(Arbitrary::arbitrary(u)?),
+                7u64 => Pat::Range(Arbitrary::arbitrary(u)?),
+                8u64 => Pat::Reference(Arbitrary::arbitrary(u)?),
+                9u64 => Pat::Rest(Arbitrary::arbitrary(u)?),
+                10u64 => Pat::Slice(Arbitrary::arbitrary(u)?),
+                11u64 => Pat::Struct(Arbitrary::arbitrary(u)?),
+                12u64 => Pat::Tuple(Arbitrary::arbitrary(u)?),
+                13u64 => Pat::TupleStruct(Arbitrary::arbitrary(u)?),
+                14u64 => Pat::Type(Arbitrary::arbitrary(u)?),
+                15u64 => {
                     Pat::Verbatim(
                         quote::quote! {
 
                         },
                     )
                 }
-                15u64 => Pat::Wild(Arbitrary::arbitrary(u)?),
+                16u64 => Pat::Wild(Arbitrary::arbitrary(u)?),
                 _ => unreachable!(),
             }
         })
@@ -1786,9 +1804,10 @@ impl<'a> Arbitrary<'a> for PathArguments {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 3u64) >> 32;
             match index {
-                0u64 => PathArguments::None,
-                1u64 => PathArguments::AngleBracketed(Arbitrary::arbitrary(u)?),
-                2u64 => PathArguments::Parenthesized(Arbitrary::arbitrary(u)?),
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => PathArguments::None,
+                2u64 => PathArguments::AngleBracketed(Arbitrary::arbitrary(u)?),
+                3u64 => PathArguments::Parenthesized(Arbitrary::arbitrary(u)?),
                 _ => unreachable!(),
             }
         })
@@ -1858,8 +1877,9 @@ impl<'a> Arbitrary<'a> for RangeLimits {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 2u64) >> 32;
             match index {
-                0u64 => RangeLimits::HalfOpen(Arbitrary::arbitrary(u)?),
-                1u64 => RangeLimits::Closed(Arbitrary::arbitrary(u)?),
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => RangeLimits::HalfOpen(Arbitrary::arbitrary(u)?),
+                2u64 => RangeLimits::Closed(Arbitrary::arbitrary(u)?),
                 _ => unreachable!(),
             }
         })
@@ -1884,8 +1904,9 @@ impl<'a> Arbitrary<'a> for ReturnType {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 2u64) >> 32;
             match index {
-                0u64 => ReturnType::Default,
-                1u64 => {
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => ReturnType::Default,
+                2u64 => {
                     ReturnType::Type(
                         Arbitrary::arbitrary(u)?,
                         Box::new(Arbitrary::arbitrary(u)?),
@@ -1922,10 +1943,11 @@ impl<'a> Arbitrary<'a> for Stmt {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 4u64) >> 32;
             match index {
-                0u64 => Stmt::Local(Arbitrary::arbitrary(u)?),
-                1u64 => Stmt::Item(Arbitrary::arbitrary(u)?),
-                2u64 => Stmt::Expr(Arbitrary::arbitrary(u)?),
-                3u64 => Stmt::Semi(Arbitrary::arbitrary(u)?, Arbitrary::arbitrary(u)?),
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => Stmt::Local(Arbitrary::arbitrary(u)?),
+                2u64 => Stmt::Item(Arbitrary::arbitrary(u)?),
+                3u64 => Stmt::Expr(Arbitrary::arbitrary(u)?),
+                4u64 => Stmt::Semi(Arbitrary::arbitrary(u)?, Arbitrary::arbitrary(u)?),
                 _ => unreachable!(),
             }
         })
@@ -1950,8 +1972,9 @@ impl<'a> Arbitrary<'a> for TraitBoundModifier {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 2u64) >> 32;
             match index {
-                0u64 => TraitBoundModifier::None,
-                1u64 => TraitBoundModifier::Maybe(Arbitrary::arbitrary(u)?),
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => TraitBoundModifier::None,
+                2u64 => TraitBoundModifier::Maybe(Arbitrary::arbitrary(u)?),
                 _ => unreachable!(),
             }
         })
@@ -1964,11 +1987,12 @@ impl<'a> Arbitrary<'a> for TraitItem {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 5u64) >> 32;
             match index {
-                0u64 => TraitItem::Const(Arbitrary::arbitrary(u)?),
-                1u64 => TraitItem::Method(Arbitrary::arbitrary(u)?),
-                2u64 => TraitItem::Type(Arbitrary::arbitrary(u)?),
-                3u64 => TraitItem::Macro(Arbitrary::arbitrary(u)?),
-                4u64 => {
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => TraitItem::Const(Arbitrary::arbitrary(u)?),
+                2u64 => TraitItem::Method(Arbitrary::arbitrary(u)?),
+                3u64 => TraitItem::Type(Arbitrary::arbitrary(u)?),
+                4u64 => TraitItem::Macro(Arbitrary::arbitrary(u)?),
+                5u64 => {
                     TraitItem::Verbatim(
                         quote::quote! {
 
@@ -2041,21 +2065,22 @@ impl<'a> Arbitrary<'a> for Type {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 15u64) >> 32;
             match index {
-                0u64 => Type::Array(Arbitrary::arbitrary(u)?),
-                1u64 => Type::BareFn(Arbitrary::arbitrary(u)?),
-                2u64 => Type::Group(Arbitrary::arbitrary(u)?),
-                3u64 => Type::ImplTrait(Arbitrary::arbitrary(u)?),
-                4u64 => Type::Infer(Arbitrary::arbitrary(u)?),
-                5u64 => Type::Macro(Arbitrary::arbitrary(u)?),
-                6u64 => Type::Never(Arbitrary::arbitrary(u)?),
-                7u64 => Type::Paren(Arbitrary::arbitrary(u)?),
-                8u64 => Type::Path(Arbitrary::arbitrary(u)?),
-                9u64 => Type::Ptr(Arbitrary::arbitrary(u)?),
-                10u64 => Type::Reference(Arbitrary::arbitrary(u)?),
-                11u64 => Type::Slice(Arbitrary::arbitrary(u)?),
-                12u64 => Type::TraitObject(Arbitrary::arbitrary(u)?),
-                13u64 => Type::Tuple(Arbitrary::arbitrary(u)?),
-                14u64 => {
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => Type::Array(Arbitrary::arbitrary(u)?),
+                2u64 => Type::BareFn(Arbitrary::arbitrary(u)?),
+                3u64 => Type::Group(Arbitrary::arbitrary(u)?),
+                4u64 => Type::ImplTrait(Arbitrary::arbitrary(u)?),
+                5u64 => Type::Infer(Arbitrary::arbitrary(u)?),
+                6u64 => Type::Macro(Arbitrary::arbitrary(u)?),
+                7u64 => Type::Never(Arbitrary::arbitrary(u)?),
+                8u64 => Type::Paren(Arbitrary::arbitrary(u)?),
+                9u64 => Type::Path(Arbitrary::arbitrary(u)?),
+                10u64 => Type::Ptr(Arbitrary::arbitrary(u)?),
+                11u64 => Type::Reference(Arbitrary::arbitrary(u)?),
+                12u64 => Type::Slice(Arbitrary::arbitrary(u)?),
+                13u64 => Type::TraitObject(Arbitrary::arbitrary(u)?),
+                14u64 => Type::Tuple(Arbitrary::arbitrary(u)?),
+                15u64 => {
                     Type::Verbatim(
                         quote::quote! {
 
@@ -2163,8 +2188,9 @@ impl<'a> Arbitrary<'a> for TypeParamBound {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 2u64) >> 32;
             match index {
-                0u64 => TypeParamBound::Trait(Arbitrary::arbitrary(u)?),
-                1u64 => TypeParamBound::Lifetime(Arbitrary::arbitrary(u)?),
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => TypeParamBound::Trait(Arbitrary::arbitrary(u)?),
+                2u64 => TypeParamBound::Lifetime(Arbitrary::arbitrary(u)?),
                 _ => unreachable!(),
             }
         })
@@ -2251,9 +2277,10 @@ impl<'a> Arbitrary<'a> for UnOp {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 3u64) >> 32;
             match index {
-                0u64 => UnOp::Deref(Arbitrary::arbitrary(u)?),
-                1u64 => UnOp::Not(Arbitrary::arbitrary(u)?),
-                2u64 => UnOp::Neg(Arbitrary::arbitrary(u)?),
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => UnOp::Deref(Arbitrary::arbitrary(u)?),
+                2u64 => UnOp::Not(Arbitrary::arbitrary(u)?),
+                3u64 => UnOp::Neg(Arbitrary::arbitrary(u)?),
                 _ => unreachable!(),
             }
         })
@@ -2316,11 +2343,12 @@ impl<'a> Arbitrary<'a> for UseTree {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 5u64) >> 32;
             match index {
-                0u64 => UseTree::Path(Arbitrary::arbitrary(u)?),
-                1u64 => UseTree::Name(Arbitrary::arbitrary(u)?),
-                2u64 => UseTree::Rename(Arbitrary::arbitrary(u)?),
-                3u64 => UseTree::Glob(Arbitrary::arbitrary(u)?),
-                4u64 => UseTree::Group(Arbitrary::arbitrary(u)?),
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => UseTree::Path(Arbitrary::arbitrary(u)?),
+                2u64 => UseTree::Name(Arbitrary::arbitrary(u)?),
+                3u64 => UseTree::Rename(Arbitrary::arbitrary(u)?),
+                4u64 => UseTree::Glob(Arbitrary::arbitrary(u)?),
+                5u64 => UseTree::Group(Arbitrary::arbitrary(u)?),
                 _ => unreachable!(),
             }
         })
@@ -2385,10 +2413,11 @@ impl<'a> Arbitrary<'a> for Visibility {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 4u64) >> 32;
             match index {
-                0u64 => Visibility::Public(Arbitrary::arbitrary(u)?),
-                1u64 => Visibility::Crate(Arbitrary::arbitrary(u)?),
-                2u64 => Visibility::Restricted(Arbitrary::arbitrary(u)?),
-                3u64 => Visibility::Inherited,
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => Visibility::Public(Arbitrary::arbitrary(u)?),
+                2u64 => Visibility::Crate(Arbitrary::arbitrary(u)?),
+                3u64 => Visibility::Restricted(Arbitrary::arbitrary(u)?),
+                4u64 => Visibility::Inherited,
                 _ => unreachable!(),
             }
         })
@@ -2411,9 +2440,10 @@ impl<'a> Arbitrary<'a> for WherePredicate {
         Ok({
             let index = (u64::from(u32::arbitrary(u)?) * 3u64) >> 32;
             match index {
-                0u64 => WherePredicate::Type(Arbitrary::arbitrary(u)?),
-                1u64 => WherePredicate::Lifetime(Arbitrary::arbitrary(u)?),
-                2u64 => WherePredicate::Eq(Arbitrary::arbitrary(u)?),
+                0 => return Err(arbitrary::Error::NotEnoughData),
+                1u64 => WherePredicate::Type(Arbitrary::arbitrary(u)?),
+                2u64 => WherePredicate::Lifetime(Arbitrary::arbitrary(u)?),
+                3u64 => WherePredicate::Eq(Arbitrary::arbitrary(u)?),
                 _ => unreachable!(),
             }
         })

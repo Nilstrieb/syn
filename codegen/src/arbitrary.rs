@@ -19,7 +19,8 @@ fn expand_impl_body(_defs: &Definitions, node: &Node) -> TokenStream {
                 .iter()
                 .enumerate()
                 .map(|(idx, (variant_name, fields))| {
-                    let idx = u64::try_from(idx).unwrap();
+                    // error on 0 - because else we stackoverflow on empty input
+                    let idx = u64::try_from(idx).unwrap() + 1;
                     let variant = Ident::new(variant_name, Span::call_site());
                     if fields.is_empty() {
                         quote! {
@@ -39,6 +40,7 @@ fn expand_impl_body(_defs: &Definitions, node: &Node) -> TokenStream {
             quote! {{
                 let index = (u64::from(u32::arbitrary(u)?) * #count) >> 32;
                 match index {
+                    0 => return Err(arbitrary::Error::NotEnoughData),
                     #(#arms)*
                     _ => unreachable!(),
                 }
