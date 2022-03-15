@@ -3,7 +3,7 @@ use anyhow::Result;
 use proc_macro2::{Ident, Span, TokenStream};
 use quote::quote;
 use std::convert::TryFrom;
-use syn_codegen::{Data, Definitions, Node};
+use syn_codegen::{Data, Definitions, Node, Type};
 
 const DEBUG_SRC: &str = "../src/gen/arbitrary.rs";
 
@@ -26,10 +26,9 @@ fn expand_impl_body(_defs: &Definitions, node: &Node) -> TokenStream {
                             #idx => #ident::#variant,
                         }
                     } else {
-                        let mut arbitraries = Vec::new();
-                        for _ in 0..fields.len() {
-                            arbitraries.push(quote!(Arbitrary::arbitrary(u)?));
-                        }
+                        let arbitraries =
+                            fields.into_iter().map(ty_to_arbitrary).collect::<Vec<_>>();
+
                         quote! {
                             #idx => #ident::#variant(#(#arbitraries),*),
                         }
@@ -46,16 +45,60 @@ fn expand_impl_body(_defs: &Definitions, node: &Node) -> TokenStream {
             }}
         }
         Data::Struct(fields) => {
-            let fields = fields.keys().map(|f| {
-                let ident = Ident::new(f, Span::call_site());
+            let fields = fields.iter().map(|(field, ty)| {
+                let ident = Ident::new(field, Span::call_site());
+
+                let arbitrary = ty_to_arbitrary(ty);
+
                 quote! {
-                    #ident: Arbitrary::arbitrary(u)?,
+                    #ident: #arbitrary,
                 }
             });
             quote!(#ident { #(#fields)* })
         }
         Data::Private => {
             unreachable!()
+        }
+    }
+}
+
+fn ty_to_arbitrary(ty: &Type) -> TokenStream {
+    match ty {
+        Type::Ext(name) if name.contains("Span") => {
+            quote! { Span::call_site() }
+        }
+        Type::Ext(name) if name.contains("Ident") => {
+            quote! { Ident::new(Arbitrary::arbitrary(u)?, Span::call_site()) }
+        }
+        Type::Ext(name) if name.contains("TokenStream") => {
+            quote! { quote::quote! {} }
+        }
+        Type::Ext(name) if name.contains("Literal") => {
+            quote! { Literal::string(&String::arbitrary(u)?) }
+        }
+        Type::Option(ty) => {
+            let arbitrary = ty_to_arbitrary(ty);
+            quote! {
+                Some(#arbitrary)
+            }
+        }
+        Type::Box(ty) => {
+            let arbitrary = ty_to_arbitrary(ty);
+            quote! { Box::new(#arbitrary) }
+        }
+        Type::Tuple(tys) => {
+            let arbitraries = tys.iter().map(ty_to_arbitrary);
+
+            quote! { (#(#arbitraries),*) }
+        }
+        Type::Vec(_)
+        | Type::Std(_)
+        | Type::Token(_)
+        | Type::Group(_)
+        | Type::Syn(_)
+        | Type::Punctuated(_)
+        | _ => {
+            quote! {Arbitrary::arbitrary(u)?}
         }
     }
 }
@@ -90,8 +133,11 @@ pub fn generate(defs: &Definitions) -> Result<()> {
     file::write(
         DEBUG_SRC,
         quote! {
+            #[allow(unused_variables)]
+
             use crate::*;
             use arbitrary::{Arbitrary, Unstructured};
+            use proc_macro2::{Ident, Literal, Span};
 
             #impls
         },

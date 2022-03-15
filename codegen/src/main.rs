@@ -34,14 +34,14 @@ fn main() -> anyhow::Result<()> {
     color_backtrace::install();
     let defs = parse::parse()?;
     arbitrary::generate(&defs)?;
-    clone::generate(&defs)?;
-    debug::generate(&defs)?;
-    eq::generate(&defs)?;
-    hash::generate(&defs)?;
-    json::generate(&defs)?;
-    fold::generate(&defs)?;
-    visit::generate(&defs)?;
-    visit_mut::generate(&defs)?;
-    snapshot::generate(&defs)?;
+    //clone::generate(&defs)?;
+    //debug::generate(&defs)?;
+    //eq::generate(&defs)?;
+    //hash::generate(&defs)?;
+    //json::generate(&defs)?;
+    //fold::generate(&defs)?;
+    //visit::generate(&defs)?;
+    //visit_mut::generate(&defs)?;
+    //snapshot::generate(&defs)?;
     Ok(())
 }

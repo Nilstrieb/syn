@@ -339,7 +339,7 @@ macro_rules! define_keywords {
 
             #[cfg(feature = "arbitrary")]
             impl<'a> arbitrary::Arbitrary<'a> for $name {
-                fn arbitrary(u: &mut arbitrary::Unstructured<'a>) -> arbitrary::Result<Self> {
+                fn arbitrary(_u: &mut arbitrary::Unstructured<'a>) -> arbitrary::Result<Self> {
                     Ok(Self { span: Span::call_site() })
                 }
             }
@@ -437,8 +437,8 @@ macro_rules! define_punctuation_structs {
 
             #[cfg(feature = "arbitrary")]
             impl<'a> arbitrary::Arbitrary<'a> for $name {
-                fn arbitrary(u: &mut arbitrary::Unstructured<'a>) -> arbitrary::Result<Self> {
-                    Ok(Self { spans: [Span::call_site()] })
+                fn arbitrary(_u: &mut arbitrary::Unstructured<'a>) -> arbitrary::Result<Self> {
+                    Ok(Self { spans: [Span::call_site(); $len] })
                 }
             }
 
@@ -558,6 +558,13 @@ macro_rules! define_delimiters {
                     F: FnOnce(&mut TokenStream),
                 {
                     printing::delim($token, self.span, tokens, f);
+                }
+            }
+
+            #[cfg(feature = "arbitrary")]
+            impl<'a> arbitrary::Arbitrary<'a> for $name {
+                fn arbitrary(_u: &mut arbitrary::Unstructured<'a>) -> arbitrary::Result<Self> {
+                    Ok(Self { span: Span::call_site() })
                 }
             }
 

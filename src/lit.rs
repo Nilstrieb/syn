@@ -80,10 +80,20 @@ ast_struct! {
     }
 }
 
-#[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
 struct LitRepr {
     token: Literal,
     suffix: Box<str>,
+}
+
+#[cfg(feature = "arbitrary")]
+impl<'a> arbitrary::Arbitrary<'a> for LitRepr {
+    fn arbitrary(u: &mut arbitrary::Unstructured<'a>) -> arbitrary::Result<Self> {
+        Ok(LitRepr {
+            // todo: all literals
+            token: Literal::string(&String::arbitrary(u)?),
+            suffix: String::arbitrary(u)?.into(),
+        })
+    }
 }
 
 ast_struct! {
@@ -100,6 +110,18 @@ struct LitIntRepr {
     suffix: Box<str>,
 }
 
+#[cfg(feature = "arbitrary")]
+impl<'a> arbitrary::Arbitrary<'a> for LitIntRepr {
+    fn arbitrary(u: &mut arbitrary::Unstructured<'a>) -> arbitrary::Result<Self> {
+        Ok(LitIntRepr {
+            // todo: all literals
+            token: Literal::string(&String::arbitrary(u)?),
+            digits: String::arbitrary(u)?.into(),
+            suffix: String::arbitrary(u)?.into(),
+        })
+    }
+}
+
 ast_struct! {
     /// A floating point literal: `1f64` or `1.0e10f64`.
     ///
@@ -114,6 +136,18 @@ struct LitFloatRepr {
     token: Literal,
     digits: Box<str>,
     suffix: Box<str>,
+}
+
+#[cfg(feature = "arbitrary")]
+impl<'a> arbitrary::Arbitrary<'a> for LitFloatRepr {
+    fn arbitrary(u: &mut arbitrary::Unstructured<'a>) -> arbitrary::Result<Self> {
+        Ok(LitFloatRepr {
+            // todo: all literals
+            token: Literal::string(&String::arbitrary(u)?),
+            digits: String::arbitrary(u)?.into(),
+            suffix: String::arbitrary(u)?.into(),
+        })
+    }
 }
 
 ast_struct! {

@@ -42,3 +42,12 @@ impl Debug for Reserved {
         formatter.debug_struct("Reserved").finish()
     }
 }
+
+#[cfg(feature = "arbitrary")]
+impl<'a> arbitrary::Arbitrary<'a> for Reserved {
+    fn arbitrary(_u: &mut arbitrary::Unstructured<'a>) -> arbitrary::Result<Self> {
+        Ok(Reserved {
+            _private: PhantomData,
+        })
+    }
+}
