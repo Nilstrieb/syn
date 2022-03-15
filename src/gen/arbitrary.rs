@@ -6,7 +6,7 @@ use arbitrary::{Arbitrary, Unstructured};
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Abi {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(Abi {
             extern_token: Arbitrary::arbitrary(u)?,
             name: Arbitrary::arbitrary(u)?,
@@ -16,7 +16,7 @@ impl<'a> Arbitrary<'a> for Abi {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for AngleBracketedGenericArguments {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(AngleBracketedGenericArguments {
             colon2_token: Arbitrary::arbitrary(u)?,
             lt_token: Arbitrary::arbitrary(u)?,
@@ -28,7 +28,7 @@ impl<'a> Arbitrary<'a> for AngleBracketedGenericArguments {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Arm {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(Arm {
             attrs: Arbitrary::arbitrary(u)?,
             pat: Arbitrary::arbitrary(u)?,
@@ -42,12 +42,13 @@ impl<'a> Arbitrary<'a> for Arm {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for AttrStyle {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..2u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 2u64) >> 32;
             match index {
-                0u8 => AttrStyle::Outer,
-                1u8 => AttrStyle::Inner(Arbitrary::arbitrary(u)?),
+                0u64 => AttrStyle::Outer,
+                1u64 => AttrStyle::Inner(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -55,7 +56,7 @@ impl<'a> Arbitrary<'a> for AttrStyle {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Attribute {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(Attribute {
             pound_token: Arbitrary::arbitrary(u)?,
             style: Arbitrary::arbitrary(u)?,
@@ -68,7 +69,7 @@ impl<'a> Arbitrary<'a> for Attribute {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for BareFnArg {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(BareFnArg {
             attrs: Arbitrary::arbitrary(u)?,
             name: Arbitrary::arbitrary(u)?,
@@ -79,38 +80,39 @@ impl<'a> Arbitrary<'a> for BareFnArg {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for BinOp {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..28u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 28u64) >> 32;
             match index {
-                0u8 => BinOp::Add(Arbitrary::arbitrary(u)?),
-                1u8 => BinOp::Sub(Arbitrary::arbitrary(u)?),
-                2u8 => BinOp::Mul(Arbitrary::arbitrary(u)?),
-                3u8 => BinOp::Div(Arbitrary::arbitrary(u)?),
-                4u8 => BinOp::Rem(Arbitrary::arbitrary(u)?),
-                5u8 => BinOp::And(Arbitrary::arbitrary(u)?),
-                6u8 => BinOp::Or(Arbitrary::arbitrary(u)?),
-                7u8 => BinOp::BitXor(Arbitrary::arbitrary(u)?),
-                8u8 => BinOp::BitAnd(Arbitrary::arbitrary(u)?),
-                9u8 => BinOp::BitOr(Arbitrary::arbitrary(u)?),
-                10u8 => BinOp::Shl(Arbitrary::arbitrary(u)?),
-                11u8 => BinOp::Shr(Arbitrary::arbitrary(u)?),
-                12u8 => BinOp::Eq(Arbitrary::arbitrary(u)?),
-                13u8 => BinOp::Lt(Arbitrary::arbitrary(u)?),
-                14u8 => BinOp::Le(Arbitrary::arbitrary(u)?),
-                15u8 => BinOp::Ne(Arbitrary::arbitrary(u)?),
-                16u8 => BinOp::Ge(Arbitrary::arbitrary(u)?),
-                17u8 => BinOp::Gt(Arbitrary::arbitrary(u)?),
-                18u8 => BinOp::AddEq(Arbitrary::arbitrary(u)?),
-                19u8 => BinOp::SubEq(Arbitrary::arbitrary(u)?),
-                20u8 => BinOp::MulEq(Arbitrary::arbitrary(u)?),
-                21u8 => BinOp::DivEq(Arbitrary::arbitrary(u)?),
-                22u8 => BinOp::RemEq(Arbitrary::arbitrary(u)?),
-                23u8 => BinOp::BitXorEq(Arbitrary::arbitrary(u)?),
-                24u8 => BinOp::BitAndEq(Arbitrary::arbitrary(u)?),
-                25u8 => BinOp::BitOrEq(Arbitrary::arbitrary(u)?),
-                26u8 => BinOp::ShlEq(Arbitrary::arbitrary(u)?),
-                27u8 => BinOp::ShrEq(Arbitrary::arbitrary(u)?),
+                0u64 => BinOp::Add(Arbitrary::arbitrary(u)?),
+                1u64 => BinOp::Sub(Arbitrary::arbitrary(u)?),
+                2u64 => BinOp::Mul(Arbitrary::arbitrary(u)?),
+                3u64 => BinOp::Div(Arbitrary::arbitrary(u)?),
+                4u64 => BinOp::Rem(Arbitrary::arbitrary(u)?),
+                5u64 => BinOp::And(Arbitrary::arbitrary(u)?),
+                6u64 => BinOp::Or(Arbitrary::arbitrary(u)?),
+                7u64 => BinOp::BitXor(Arbitrary::arbitrary(u)?),
+                8u64 => BinOp::BitAnd(Arbitrary::arbitrary(u)?),
+                9u64 => BinOp::BitOr(Arbitrary::arbitrary(u)?),
+                10u64 => BinOp::Shl(Arbitrary::arbitrary(u)?),
+                11u64 => BinOp::Shr(Arbitrary::arbitrary(u)?),
+                12u64 => BinOp::Eq(Arbitrary::arbitrary(u)?),
+                13u64 => BinOp::Lt(Arbitrary::arbitrary(u)?),
+                14u64 => BinOp::Le(Arbitrary::arbitrary(u)?),
+                15u64 => BinOp::Ne(Arbitrary::arbitrary(u)?),
+                16u64 => BinOp::Ge(Arbitrary::arbitrary(u)?),
+                17u64 => BinOp::Gt(Arbitrary::arbitrary(u)?),
+                18u64 => BinOp::AddEq(Arbitrary::arbitrary(u)?),
+                19u64 => BinOp::SubEq(Arbitrary::arbitrary(u)?),
+                20u64 => BinOp::MulEq(Arbitrary::arbitrary(u)?),
+                21u64 => BinOp::DivEq(Arbitrary::arbitrary(u)?),
+                22u64 => BinOp::RemEq(Arbitrary::arbitrary(u)?),
+                23u64 => BinOp::BitXorEq(Arbitrary::arbitrary(u)?),
+                24u64 => BinOp::BitAndEq(Arbitrary::arbitrary(u)?),
+                25u64 => BinOp::BitOrEq(Arbitrary::arbitrary(u)?),
+                26u64 => BinOp::ShlEq(Arbitrary::arbitrary(u)?),
+                27u64 => BinOp::ShrEq(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -118,7 +120,7 @@ impl<'a> Arbitrary<'a> for BinOp {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Binding {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(Binding {
             ident: Arbitrary::arbitrary(u)?,
             eq_token: Arbitrary::arbitrary(u)?,
@@ -129,7 +131,7 @@ impl<'a> Arbitrary<'a> for Binding {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Block {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(Block {
             brace_token: Arbitrary::arbitrary(u)?,
             stmts: Arbitrary::arbitrary(u)?,
@@ -139,7 +141,7 @@ impl<'a> Arbitrary<'a> for Block {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for BoundLifetimes {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(BoundLifetimes {
             for_token: Arbitrary::arbitrary(u)?,
             lt_token: Arbitrary::arbitrary(u)?,
@@ -151,7 +153,7 @@ impl<'a> Arbitrary<'a> for BoundLifetimes {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ConstParam {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ConstParam {
             attrs: Arbitrary::arbitrary(u)?,
             const_token: Arbitrary::arbitrary(u)?,
@@ -166,7 +168,7 @@ impl<'a> Arbitrary<'a> for ConstParam {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Constraint {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(Constraint {
             ident: Arbitrary::arbitrary(u)?,
             colon_token: Arbitrary::arbitrary(u)?,
@@ -177,13 +179,14 @@ impl<'a> Arbitrary<'a> for Constraint {
 #[cfg(feature = "derive")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Data {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..3u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 3u64) >> 32;
             match index {
-                0u8 => Data::Struct(Arbitrary::arbitrary(u)?),
-                1u8 => Data::Enum(Arbitrary::arbitrary(u)?),
-                2u8 => Data::Union(Arbitrary::arbitrary(u)?),
+                0u64 => Data::Struct(Arbitrary::arbitrary(u)?),
+                1u64 => Data::Enum(Arbitrary::arbitrary(u)?),
+                2u64 => Data::Union(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -191,7 +194,7 @@ impl<'a> Arbitrary<'a> for Data {
 #[cfg(feature = "derive")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for DataEnum {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(DataEnum {
             enum_token: Arbitrary::arbitrary(u)?,
             brace_token: Arbitrary::arbitrary(u)?,
@@ -202,7 +205,7 @@ impl<'a> Arbitrary<'a> for DataEnum {
 #[cfg(feature = "derive")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for DataStruct {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(DataStruct {
             struct_token: Arbitrary::arbitrary(u)?,
             fields: Arbitrary::arbitrary(u)?,
@@ -213,7 +216,7 @@ impl<'a> Arbitrary<'a> for DataStruct {
 #[cfg(feature = "derive")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for DataUnion {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(DataUnion {
             union_token: Arbitrary::arbitrary(u)?,
             fields: Arbitrary::arbitrary(u)?,
@@ -223,7 +226,7 @@ impl<'a> Arbitrary<'a> for DataUnion {
 #[cfg(feature = "derive")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for DeriveInput {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(DeriveInput {
             attrs: Arbitrary::arbitrary(u)?,
             vis: Arbitrary::arbitrary(u)?,
@@ -236,50 +239,51 @@ impl<'a> Arbitrary<'a> for DeriveInput {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Expr {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..40u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 40u64) >> 32;
             match index {
-                0u8 => Expr::Array(Arbitrary::arbitrary(u)?),
-                1u8 => Expr::Assign(Arbitrary::arbitrary(u)?),
-                2u8 => Expr::AssignOp(Arbitrary::arbitrary(u)?),
-                3u8 => Expr::Async(Arbitrary::arbitrary(u)?),
-                4u8 => Expr::Await(Arbitrary::arbitrary(u)?),
-                5u8 => Expr::Binary(Arbitrary::arbitrary(u)?),
-                6u8 => Expr::Block(Arbitrary::arbitrary(u)?),
-                7u8 => Expr::Box(Arbitrary::arbitrary(u)?),
-                8u8 => Expr::Break(Arbitrary::arbitrary(u)?),
-                9u8 => Expr::Call(Arbitrary::arbitrary(u)?),
-                10u8 => Expr::Cast(Arbitrary::arbitrary(u)?),
-                11u8 => Expr::Closure(Arbitrary::arbitrary(u)?),
-                12u8 => Expr::Continue(Arbitrary::arbitrary(u)?),
-                13u8 => Expr::Field(Arbitrary::arbitrary(u)?),
-                14u8 => Expr::ForLoop(Arbitrary::arbitrary(u)?),
-                15u8 => Expr::Group(Arbitrary::arbitrary(u)?),
-                16u8 => Expr::If(Arbitrary::arbitrary(u)?),
-                17u8 => Expr::Index(Arbitrary::arbitrary(u)?),
-                18u8 => Expr::Let(Arbitrary::arbitrary(u)?),
-                19u8 => Expr::Lit(Arbitrary::arbitrary(u)?),
-                20u8 => Expr::Loop(Arbitrary::arbitrary(u)?),
-                21u8 => Expr::Macro(Arbitrary::arbitrary(u)?),
-                22u8 => Expr::Match(Arbitrary::arbitrary(u)?),
-                23u8 => Expr::MethodCall(Arbitrary::arbitrary(u)?),
-                24u8 => Expr::Paren(Arbitrary::arbitrary(u)?),
-                25u8 => Expr::Path(Arbitrary::arbitrary(u)?),
-                26u8 => Expr::Range(Arbitrary::arbitrary(u)?),
-                27u8 => Expr::Reference(Arbitrary::arbitrary(u)?),
-                28u8 => Expr::Repeat(Arbitrary::arbitrary(u)?),
-                29u8 => Expr::Return(Arbitrary::arbitrary(u)?),
-                30u8 => Expr::Struct(Arbitrary::arbitrary(u)?),
-                31u8 => Expr::Try(Arbitrary::arbitrary(u)?),
-                32u8 => Expr::TryBlock(Arbitrary::arbitrary(u)?),
-                33u8 => Expr::Tuple(Arbitrary::arbitrary(u)?),
-                34u8 => Expr::Type(Arbitrary::arbitrary(u)?),
-                35u8 => Expr::Unary(Arbitrary::arbitrary(u)?),
-                36u8 => Expr::Unsafe(Arbitrary::arbitrary(u)?),
-                37u8 => Expr::Verbatim(Arbitrary::arbitrary(u)?),
-                38u8 => Expr::While(Arbitrary::arbitrary(u)?),
-                39u8 => Expr::Yield(Arbitrary::arbitrary(u)?),
+                0u64 => Expr::Array(Arbitrary::arbitrary(u)?),
+                1u64 => Expr::Assign(Arbitrary::arbitrary(u)?),
+                2u64 => Expr::AssignOp(Arbitrary::arbitrary(u)?),
+                3u64 => Expr::Async(Arbitrary::arbitrary(u)?),
+                4u64 => Expr::Await(Arbitrary::arbitrary(u)?),
+                5u64 => Expr::Binary(Arbitrary::arbitrary(u)?),
+                6u64 => Expr::Block(Arbitrary::arbitrary(u)?),
+                7u64 => Expr::Box(Arbitrary::arbitrary(u)?),
+                8u64 => Expr::Break(Arbitrary::arbitrary(u)?),
+                9u64 => Expr::Call(Arbitrary::arbitrary(u)?),
+                10u64 => Expr::Cast(Arbitrary::arbitrary(u)?),
+                11u64 => Expr::Closure(Arbitrary::arbitrary(u)?),
+                12u64 => Expr::Continue(Arbitrary::arbitrary(u)?),
+                13u64 => Expr::Field(Arbitrary::arbitrary(u)?),
+                14u64 => Expr::ForLoop(Arbitrary::arbitrary(u)?),
+                15u64 => Expr::Group(Arbitrary::arbitrary(u)?),
+                16u64 => Expr::If(Arbitrary::arbitrary(u)?),
+                17u64 => Expr::Index(Arbitrary::arbitrary(u)?),
+                18u64 => Expr::Let(Arbitrary::arbitrary(u)?),
+                19u64 => Expr::Lit(Arbitrary::arbitrary(u)?),
+                20u64 => Expr::Loop(Arbitrary::arbitrary(u)?),
+                21u64 => Expr::Macro(Arbitrary::arbitrary(u)?),
+                22u64 => Expr::Match(Arbitrary::arbitrary(u)?),
+                23u64 => Expr::MethodCall(Arbitrary::arbitrary(u)?),
+                24u64 => Expr::Paren(Arbitrary::arbitrary(u)?),
+                25u64 => Expr::Path(Arbitrary::arbitrary(u)?),
+                26u64 => Expr::Range(Arbitrary::arbitrary(u)?),
+                27u64 => Expr::Reference(Arbitrary::arbitrary(u)?),
+                28u64 => Expr::Repeat(Arbitrary::arbitrary(u)?),
+                29u64 => Expr::Return(Arbitrary::arbitrary(u)?),
+                30u64 => Expr::Struct(Arbitrary::arbitrary(u)?),
+                31u64 => Expr::Try(Arbitrary::arbitrary(u)?),
+                32u64 => Expr::TryBlock(Arbitrary::arbitrary(u)?),
+                33u64 => Expr::Tuple(Arbitrary::arbitrary(u)?),
+                34u64 => Expr::Type(Arbitrary::arbitrary(u)?),
+                35u64 => Expr::Unary(Arbitrary::arbitrary(u)?),
+                36u64 => Expr::Unsafe(Arbitrary::arbitrary(u)?),
+                37u64 => Expr::Verbatim(Arbitrary::arbitrary(u)?),
+                38u64 => Expr::While(Arbitrary::arbitrary(u)?),
+                39u64 => Expr::Yield(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -287,7 +291,7 @@ impl<'a> Arbitrary<'a> for Expr {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprArray {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprArray {
             attrs: Arbitrary::arbitrary(u)?,
             bracket_token: Arbitrary::arbitrary(u)?,
@@ -298,7 +302,7 @@ impl<'a> Arbitrary<'a> for ExprArray {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprAssign {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprAssign {
             attrs: Arbitrary::arbitrary(u)?,
             left: Arbitrary::arbitrary(u)?,
@@ -310,7 +314,7 @@ impl<'a> Arbitrary<'a> for ExprAssign {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprAssignOp {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprAssignOp {
             attrs: Arbitrary::arbitrary(u)?,
             left: Arbitrary::arbitrary(u)?,
@@ -322,7 +326,7 @@ impl<'a> Arbitrary<'a> for ExprAssignOp {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprAsync {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprAsync {
             attrs: Arbitrary::arbitrary(u)?,
             async_token: Arbitrary::arbitrary(u)?,
@@ -334,7 +338,7 @@ impl<'a> Arbitrary<'a> for ExprAsync {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprAwait {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprAwait {
             attrs: Arbitrary::arbitrary(u)?,
             base: Arbitrary::arbitrary(u)?,
@@ -346,7 +350,7 @@ impl<'a> Arbitrary<'a> for ExprAwait {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprBinary {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprBinary {
             attrs: Arbitrary::arbitrary(u)?,
             left: Arbitrary::arbitrary(u)?,
@@ -358,7 +362,7 @@ impl<'a> Arbitrary<'a> for ExprBinary {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprBlock {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprBlock {
             attrs: Arbitrary::arbitrary(u)?,
             label: Arbitrary::arbitrary(u)?,
@@ -369,7 +373,7 @@ impl<'a> Arbitrary<'a> for ExprBlock {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprBox {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprBox {
             attrs: Arbitrary::arbitrary(u)?,
             box_token: Arbitrary::arbitrary(u)?,
@@ -380,7 +384,7 @@ impl<'a> Arbitrary<'a> for ExprBox {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprBreak {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprBreak {
             attrs: Arbitrary::arbitrary(u)?,
             break_token: Arbitrary::arbitrary(u)?,
@@ -392,7 +396,7 @@ impl<'a> Arbitrary<'a> for ExprBreak {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprCall {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprCall {
             attrs: Arbitrary::arbitrary(u)?,
             func: Arbitrary::arbitrary(u)?,
@@ -404,7 +408,7 @@ impl<'a> Arbitrary<'a> for ExprCall {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprCast {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprCast {
             attrs: Arbitrary::arbitrary(u)?,
             expr: Arbitrary::arbitrary(u)?,
@@ -416,7 +420,7 @@ impl<'a> Arbitrary<'a> for ExprCast {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprClosure {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprClosure {
             attrs: Arbitrary::arbitrary(u)?,
             movability: Arbitrary::arbitrary(u)?,
@@ -433,7 +437,7 @@ impl<'a> Arbitrary<'a> for ExprClosure {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprContinue {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprContinue {
             attrs: Arbitrary::arbitrary(u)?,
             continue_token: Arbitrary::arbitrary(u)?,
@@ -444,7 +448,7 @@ impl<'a> Arbitrary<'a> for ExprContinue {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprField {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprField {
             attrs: Arbitrary::arbitrary(u)?,
             base: Arbitrary::arbitrary(u)?,
@@ -456,7 +460,7 @@ impl<'a> Arbitrary<'a> for ExprField {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprForLoop {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprForLoop {
             attrs: Arbitrary::arbitrary(u)?,
             label: Arbitrary::arbitrary(u)?,
@@ -471,7 +475,7 @@ impl<'a> Arbitrary<'a> for ExprForLoop {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprGroup {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprGroup {
             attrs: Arbitrary::arbitrary(u)?,
             group_token: Arbitrary::arbitrary(u)?,
@@ -482,7 +486,7 @@ impl<'a> Arbitrary<'a> for ExprGroup {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprIf {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprIf {
             attrs: Arbitrary::arbitrary(u)?,
             if_token: Arbitrary::arbitrary(u)?,
@@ -495,7 +499,7 @@ impl<'a> Arbitrary<'a> for ExprIf {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprIndex {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprIndex {
             attrs: Arbitrary::arbitrary(u)?,
             expr: Arbitrary::arbitrary(u)?,
@@ -507,7 +511,7 @@ impl<'a> Arbitrary<'a> for ExprIndex {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprLet {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprLet {
             attrs: Arbitrary::arbitrary(u)?,
             let_token: Arbitrary::arbitrary(u)?,
@@ -520,7 +524,7 @@ impl<'a> Arbitrary<'a> for ExprLet {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprLit {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprLit {
             attrs: Arbitrary::arbitrary(u)?,
             lit: Arbitrary::arbitrary(u)?,
@@ -530,7 +534,7 @@ impl<'a> Arbitrary<'a> for ExprLit {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprLoop {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprLoop {
             attrs: Arbitrary::arbitrary(u)?,
             label: Arbitrary::arbitrary(u)?,
@@ -542,7 +546,7 @@ impl<'a> Arbitrary<'a> for ExprLoop {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprMacro {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprMacro {
             attrs: Arbitrary::arbitrary(u)?,
             mac: Arbitrary::arbitrary(u)?,
@@ -552,7 +556,7 @@ impl<'a> Arbitrary<'a> for ExprMacro {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprMatch {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprMatch {
             attrs: Arbitrary::arbitrary(u)?,
             match_token: Arbitrary::arbitrary(u)?,
@@ -565,7 +569,7 @@ impl<'a> Arbitrary<'a> for ExprMatch {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprMethodCall {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprMethodCall {
             attrs: Arbitrary::arbitrary(u)?,
             receiver: Arbitrary::arbitrary(u)?,
@@ -580,7 +584,7 @@ impl<'a> Arbitrary<'a> for ExprMethodCall {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprParen {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprParen {
             attrs: Arbitrary::arbitrary(u)?,
             paren_token: Arbitrary::arbitrary(u)?,
@@ -591,7 +595,7 @@ impl<'a> Arbitrary<'a> for ExprParen {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprPath {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprPath {
             attrs: Arbitrary::arbitrary(u)?,
             qself: Arbitrary::arbitrary(u)?,
@@ -602,7 +606,7 @@ impl<'a> Arbitrary<'a> for ExprPath {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprRange {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprRange {
             attrs: Arbitrary::arbitrary(u)?,
             from: Arbitrary::arbitrary(u)?,
@@ -614,7 +618,7 @@ impl<'a> Arbitrary<'a> for ExprRange {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprReference {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprReference {
             attrs: Arbitrary::arbitrary(u)?,
             and_token: Arbitrary::arbitrary(u)?,
@@ -627,7 +631,7 @@ impl<'a> Arbitrary<'a> for ExprReference {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprRepeat {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprRepeat {
             attrs: Arbitrary::arbitrary(u)?,
             bracket_token: Arbitrary::arbitrary(u)?,
@@ -640,7 +644,7 @@ impl<'a> Arbitrary<'a> for ExprRepeat {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprReturn {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprReturn {
             attrs: Arbitrary::arbitrary(u)?,
             return_token: Arbitrary::arbitrary(u)?,
@@ -651,7 +655,7 @@ impl<'a> Arbitrary<'a> for ExprReturn {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprStruct {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprStruct {
             attrs: Arbitrary::arbitrary(u)?,
             path: Arbitrary::arbitrary(u)?,
@@ -665,7 +669,7 @@ impl<'a> Arbitrary<'a> for ExprStruct {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprTry {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprTry {
             attrs: Arbitrary::arbitrary(u)?,
             expr: Arbitrary::arbitrary(u)?,
@@ -676,7 +680,7 @@ impl<'a> Arbitrary<'a> for ExprTry {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprTryBlock {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprTryBlock {
             attrs: Arbitrary::arbitrary(u)?,
             try_token: Arbitrary::arbitrary(u)?,
@@ -687,7 +691,7 @@ impl<'a> Arbitrary<'a> for ExprTryBlock {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprTuple {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprTuple {
             attrs: Arbitrary::arbitrary(u)?,
             paren_token: Arbitrary::arbitrary(u)?,
@@ -698,7 +702,7 @@ impl<'a> Arbitrary<'a> for ExprTuple {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprType {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprType {
             attrs: Arbitrary::arbitrary(u)?,
             expr: Arbitrary::arbitrary(u)?,
@@ -710,7 +714,7 @@ impl<'a> Arbitrary<'a> for ExprType {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprUnary {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprUnary {
             attrs: Arbitrary::arbitrary(u)?,
             op: Arbitrary::arbitrary(u)?,
@@ -721,7 +725,7 @@ impl<'a> Arbitrary<'a> for ExprUnary {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprUnsafe {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprUnsafe {
             attrs: Arbitrary::arbitrary(u)?,
             unsafe_token: Arbitrary::arbitrary(u)?,
@@ -732,7 +736,7 @@ impl<'a> Arbitrary<'a> for ExprUnsafe {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprWhile {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprWhile {
             attrs: Arbitrary::arbitrary(u)?,
             label: Arbitrary::arbitrary(u)?,
@@ -745,7 +749,7 @@ impl<'a> Arbitrary<'a> for ExprWhile {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ExprYield {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ExprYield {
             attrs: Arbitrary::arbitrary(u)?,
             yield_token: Arbitrary::arbitrary(u)?,
@@ -756,7 +760,7 @@ impl<'a> Arbitrary<'a> for ExprYield {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Field {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(Field {
             attrs: Arbitrary::arbitrary(u)?,
             vis: Arbitrary::arbitrary(u)?,
@@ -769,7 +773,7 @@ impl<'a> Arbitrary<'a> for Field {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for FieldPat {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(FieldPat {
             attrs: Arbitrary::arbitrary(u)?,
             member: Arbitrary::arbitrary(u)?,
@@ -781,7 +785,7 @@ impl<'a> Arbitrary<'a> for FieldPat {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for FieldValue {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(FieldValue {
             attrs: Arbitrary::arbitrary(u)?,
             member: Arbitrary::arbitrary(u)?,
@@ -793,13 +797,14 @@ impl<'a> Arbitrary<'a> for FieldValue {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Fields {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..3u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 3u64) >> 32;
             match index {
-                0u8 => Fields::Named(Arbitrary::arbitrary(u)?),
-                1u8 => Fields::Unnamed(Arbitrary::arbitrary(u)?),
-                2u8 => Fields::Unit,
+                0u64 => Fields::Named(Arbitrary::arbitrary(u)?),
+                1u64 => Fields::Unnamed(Arbitrary::arbitrary(u)?),
+                2u64 => Fields::Unit,
+                _ => unreachable!(),
             }
         })
     }
@@ -807,7 +812,7 @@ impl<'a> Arbitrary<'a> for Fields {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for FieldsNamed {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(FieldsNamed {
             brace_token: Arbitrary::arbitrary(u)?,
             named: Arbitrary::arbitrary(u)?,
@@ -817,7 +822,7 @@ impl<'a> Arbitrary<'a> for FieldsNamed {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for FieldsUnnamed {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(FieldsUnnamed {
             paren_token: Arbitrary::arbitrary(u)?,
             unnamed: Arbitrary::arbitrary(u)?,
@@ -827,7 +832,7 @@ impl<'a> Arbitrary<'a> for FieldsUnnamed {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for File {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(File {
             shebang: Arbitrary::arbitrary(u)?,
             attrs: Arbitrary::arbitrary(u)?,
@@ -838,12 +843,13 @@ impl<'a> Arbitrary<'a> for File {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for FnArg {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..2u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 2u64) >> 32;
             match index {
-                0u8 => FnArg::Receiver(Arbitrary::arbitrary(u)?),
-                1u8 => FnArg::Typed(Arbitrary::arbitrary(u)?),
+                0u64 => FnArg::Receiver(Arbitrary::arbitrary(u)?),
+                1u64 => FnArg::Typed(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -851,15 +857,16 @@ impl<'a> Arbitrary<'a> for FnArg {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ForeignItem {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..5u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 5u64) >> 32;
             match index {
-                0u8 => ForeignItem::Fn(Arbitrary::arbitrary(u)?),
-                1u8 => ForeignItem::Static(Arbitrary::arbitrary(u)?),
-                2u8 => ForeignItem::Type(Arbitrary::arbitrary(u)?),
-                3u8 => ForeignItem::Macro(Arbitrary::arbitrary(u)?),
-                4u8 => ForeignItem::Verbatim(Arbitrary::arbitrary(u)?),
+                0u64 => ForeignItem::Fn(Arbitrary::arbitrary(u)?),
+                1u64 => ForeignItem::Static(Arbitrary::arbitrary(u)?),
+                2u64 => ForeignItem::Type(Arbitrary::arbitrary(u)?),
+                3u64 => ForeignItem::Macro(Arbitrary::arbitrary(u)?),
+                4u64 => ForeignItem::Verbatim(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -867,7 +874,7 @@ impl<'a> Arbitrary<'a> for ForeignItem {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ForeignItemFn {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ForeignItemFn {
             attrs: Arbitrary::arbitrary(u)?,
             vis: Arbitrary::arbitrary(u)?,
@@ -879,7 +886,7 @@ impl<'a> Arbitrary<'a> for ForeignItemFn {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ForeignItemMacro {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ForeignItemMacro {
             attrs: Arbitrary::arbitrary(u)?,
             mac: Arbitrary::arbitrary(u)?,
@@ -890,7 +897,7 @@ impl<'a> Arbitrary<'a> for ForeignItemMacro {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ForeignItemStatic {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ForeignItemStatic {
             attrs: Arbitrary::arbitrary(u)?,
             vis: Arbitrary::arbitrary(u)?,
@@ -906,7 +913,7 @@ impl<'a> Arbitrary<'a> for ForeignItemStatic {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ForeignItemType {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ForeignItemType {
             attrs: Arbitrary::arbitrary(u)?,
             vis: Arbitrary::arbitrary(u)?,
@@ -919,15 +926,16 @@ impl<'a> Arbitrary<'a> for ForeignItemType {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for GenericArgument {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..5u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 5u64) >> 32;
             match index {
-                0u8 => GenericArgument::Lifetime(Arbitrary::arbitrary(u)?),
-                1u8 => GenericArgument::Type(Arbitrary::arbitrary(u)?),
-                2u8 => GenericArgument::Binding(Arbitrary::arbitrary(u)?),
-                3u8 => GenericArgument::Constraint(Arbitrary::arbitrary(u)?),
-                4u8 => GenericArgument::Const(Arbitrary::arbitrary(u)?),
+                0u64 => GenericArgument::Lifetime(Arbitrary::arbitrary(u)?),
+                1u64 => GenericArgument::Type(Arbitrary::arbitrary(u)?),
+                2u64 => GenericArgument::Binding(Arbitrary::arbitrary(u)?),
+                3u64 => GenericArgument::Constraint(Arbitrary::arbitrary(u)?),
+                4u64 => GenericArgument::Const(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -935,12 +943,13 @@ impl<'a> Arbitrary<'a> for GenericArgument {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for GenericMethodArgument {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..2u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 2u64) >> 32;
             match index {
-                0u8 => GenericMethodArgument::Type(Arbitrary::arbitrary(u)?),
-                1u8 => GenericMethodArgument::Const(Arbitrary::arbitrary(u)?),
+                0u64 => GenericMethodArgument::Type(Arbitrary::arbitrary(u)?),
+                1u64 => GenericMethodArgument::Const(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -948,13 +957,14 @@ impl<'a> Arbitrary<'a> for GenericMethodArgument {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for GenericParam {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..3u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 3u64) >> 32;
             match index {
-                0u8 => GenericParam::Type(Arbitrary::arbitrary(u)?),
-                1u8 => GenericParam::Lifetime(Arbitrary::arbitrary(u)?),
-                2u8 => GenericParam::Const(Arbitrary::arbitrary(u)?),
+                0u64 => GenericParam::Type(Arbitrary::arbitrary(u)?),
+                1u64 => GenericParam::Lifetime(Arbitrary::arbitrary(u)?),
+                2u64 => GenericParam::Const(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -962,7 +972,7 @@ impl<'a> Arbitrary<'a> for GenericParam {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Generics {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(Generics {
             lt_token: Arbitrary::arbitrary(u)?,
             params: Arbitrary::arbitrary(u)?,
@@ -974,15 +984,16 @@ impl<'a> Arbitrary<'a> for Generics {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ImplItem {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..5u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 5u64) >> 32;
             match index {
-                0u8 => ImplItem::Const(Arbitrary::arbitrary(u)?),
-                1u8 => ImplItem::Method(Arbitrary::arbitrary(u)?),
-                2u8 => ImplItem::Type(Arbitrary::arbitrary(u)?),
-                3u8 => ImplItem::Macro(Arbitrary::arbitrary(u)?),
-                4u8 => ImplItem::Verbatim(Arbitrary::arbitrary(u)?),
+                0u64 => ImplItem::Const(Arbitrary::arbitrary(u)?),
+                1u64 => ImplItem::Method(Arbitrary::arbitrary(u)?),
+                2u64 => ImplItem::Type(Arbitrary::arbitrary(u)?),
+                3u64 => ImplItem::Macro(Arbitrary::arbitrary(u)?),
+                4u64 => ImplItem::Verbatim(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -990,7 +1001,7 @@ impl<'a> Arbitrary<'a> for ImplItem {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ImplItemConst {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ImplItemConst {
             attrs: Arbitrary::arbitrary(u)?,
             vis: Arbitrary::arbitrary(u)?,
@@ -1008,7 +1019,7 @@ impl<'a> Arbitrary<'a> for ImplItemConst {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ImplItemMacro {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ImplItemMacro {
             attrs: Arbitrary::arbitrary(u)?,
             mac: Arbitrary::arbitrary(u)?,
@@ -1019,7 +1030,7 @@ impl<'a> Arbitrary<'a> for ImplItemMacro {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ImplItemMethod {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ImplItemMethod {
             attrs: Arbitrary::arbitrary(u)?,
             vis: Arbitrary::arbitrary(u)?,
@@ -1032,7 +1043,7 @@ impl<'a> Arbitrary<'a> for ImplItemMethod {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ImplItemType {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ImplItemType {
             attrs: Arbitrary::arbitrary(u)?,
             vis: Arbitrary::arbitrary(u)?,
@@ -1049,7 +1060,7 @@ impl<'a> Arbitrary<'a> for ImplItemType {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Index {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(Index {
             index: Arbitrary::arbitrary(u)?,
             span: Arbitrary::arbitrary(u)?,
@@ -1059,27 +1070,28 @@ impl<'a> Arbitrary<'a> for Index {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Item {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..17u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 17u64) >> 32;
             match index {
-                0u8 => Item::Const(Arbitrary::arbitrary(u)?),
-                1u8 => Item::Enum(Arbitrary::arbitrary(u)?),
-                2u8 => Item::ExternCrate(Arbitrary::arbitrary(u)?),
-                3u8 => Item::Fn(Arbitrary::arbitrary(u)?),
-                4u8 => Item::ForeignMod(Arbitrary::arbitrary(u)?),
-                5u8 => Item::Impl(Arbitrary::arbitrary(u)?),
-                6u8 => Item::Macro(Arbitrary::arbitrary(u)?),
-                7u8 => Item::Macro2(Arbitrary::arbitrary(u)?),
-                8u8 => Item::Mod(Arbitrary::arbitrary(u)?),
-                9u8 => Item::Static(Arbitrary::arbitrary(u)?),
-                10u8 => Item::Struct(Arbitrary::arbitrary(u)?),
-                11u8 => Item::Trait(Arbitrary::arbitrary(u)?),
-                12u8 => Item::TraitAlias(Arbitrary::arbitrary(u)?),
-                13u8 => Item::Type(Arbitrary::arbitrary(u)?),
-                14u8 => Item::Union(Arbitrary::arbitrary(u)?),
-                15u8 => Item::Use(Arbitrary::arbitrary(u)?),
-                16u8 => Item::Verbatim(Arbitrary::arbitrary(u)?),
+                0u64 => Item::Const(Arbitrary::arbitrary(u)?),
+                1u64 => Item::Enum(Arbitrary::arbitrary(u)?),
+                2u64 => Item::ExternCrate(Arbitrary::arbitrary(u)?),
+                3u64 => Item::Fn(Arbitrary::arbitrary(u)?),
+                4u64 => Item::ForeignMod(Arbitrary::arbitrary(u)?),
+                5u64 => Item::Impl(Arbitrary::arbitrary(u)?),
+                6u64 => Item::Macro(Arbitrary::arbitrary(u)?),
+                7u64 => Item::Macro2(Arbitrary::arbitrary(u)?),
+                8u64 => Item::Mod(Arbitrary::arbitrary(u)?),
+                9u64 => Item::Static(Arbitrary::arbitrary(u)?),
+                10u64 => Item::Struct(Arbitrary::arbitrary(u)?),
+                11u64 => Item::Trait(Arbitrary::arbitrary(u)?),
+                12u64 => Item::TraitAlias(Arbitrary::arbitrary(u)?),
+                13u64 => Item::Type(Arbitrary::arbitrary(u)?),
+                14u64 => Item::Union(Arbitrary::arbitrary(u)?),
+                15u64 => Item::Use(Arbitrary::arbitrary(u)?),
+                16u64 => Item::Verbatim(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -1087,7 +1099,7 @@ impl<'a> Arbitrary<'a> for Item {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ItemConst {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ItemConst {
             attrs: Arbitrary::arbitrary(u)?,
             vis: Arbitrary::arbitrary(u)?,
@@ -1104,7 +1116,7 @@ impl<'a> Arbitrary<'a> for ItemConst {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ItemEnum {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ItemEnum {
             attrs: Arbitrary::arbitrary(u)?,
             vis: Arbitrary::arbitrary(u)?,
@@ -1119,7 +1131,7 @@ impl<'a> Arbitrary<'a> for ItemEnum {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ItemExternCrate {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ItemExternCrate {
             attrs: Arbitrary::arbitrary(u)?,
             vis: Arbitrary::arbitrary(u)?,
@@ -1134,7 +1146,7 @@ impl<'a> Arbitrary<'a> for ItemExternCrate {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ItemFn {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ItemFn {
             attrs: Arbitrary::arbitrary(u)?,
             vis: Arbitrary::arbitrary(u)?,
@@ -1146,7 +1158,7 @@ impl<'a> Arbitrary<'a> for ItemFn {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ItemForeignMod {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ItemForeignMod {
             attrs: Arbitrary::arbitrary(u)?,
             abi: Arbitrary::arbitrary(u)?,
@@ -1158,7 +1170,7 @@ impl<'a> Arbitrary<'a> for ItemForeignMod {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ItemImpl {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ItemImpl {
             attrs: Arbitrary::arbitrary(u)?,
             defaultness: Arbitrary::arbitrary(u)?,
@@ -1175,7 +1187,7 @@ impl<'a> Arbitrary<'a> for ItemImpl {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ItemMacro {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ItemMacro {
             attrs: Arbitrary::arbitrary(u)?,
             ident: Arbitrary::arbitrary(u)?,
@@ -1187,7 +1199,7 @@ impl<'a> Arbitrary<'a> for ItemMacro {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ItemMacro2 {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ItemMacro2 {
             attrs: Arbitrary::arbitrary(u)?,
             vis: Arbitrary::arbitrary(u)?,
@@ -1200,7 +1212,7 @@ impl<'a> Arbitrary<'a> for ItemMacro2 {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ItemMod {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ItemMod {
             attrs: Arbitrary::arbitrary(u)?,
             vis: Arbitrary::arbitrary(u)?,
@@ -1214,7 +1226,7 @@ impl<'a> Arbitrary<'a> for ItemMod {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ItemStatic {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ItemStatic {
             attrs: Arbitrary::arbitrary(u)?,
             vis: Arbitrary::arbitrary(u)?,
@@ -1232,7 +1244,7 @@ impl<'a> Arbitrary<'a> for ItemStatic {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ItemStruct {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ItemStruct {
             attrs: Arbitrary::arbitrary(u)?,
             vis: Arbitrary::arbitrary(u)?,
@@ -1247,7 +1259,7 @@ impl<'a> Arbitrary<'a> for ItemStruct {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ItemTrait {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ItemTrait {
             attrs: Arbitrary::arbitrary(u)?,
             vis: Arbitrary::arbitrary(u)?,
@@ -1266,7 +1278,7 @@ impl<'a> Arbitrary<'a> for ItemTrait {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ItemTraitAlias {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ItemTraitAlias {
             attrs: Arbitrary::arbitrary(u)?,
             vis: Arbitrary::arbitrary(u)?,
@@ -1282,7 +1294,7 @@ impl<'a> Arbitrary<'a> for ItemTraitAlias {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ItemType {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ItemType {
             attrs: Arbitrary::arbitrary(u)?,
             vis: Arbitrary::arbitrary(u)?,
@@ -1298,7 +1310,7 @@ impl<'a> Arbitrary<'a> for ItemType {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ItemUnion {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ItemUnion {
             attrs: Arbitrary::arbitrary(u)?,
             vis: Arbitrary::arbitrary(u)?,
@@ -1312,7 +1324,7 @@ impl<'a> Arbitrary<'a> for ItemUnion {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ItemUse {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ItemUse {
             attrs: Arbitrary::arbitrary(u)?,
             vis: Arbitrary::arbitrary(u)?,
@@ -1326,7 +1338,7 @@ impl<'a> Arbitrary<'a> for ItemUse {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Label {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(Label {
             name: Arbitrary::arbitrary(u)?,
             colon_token: Arbitrary::arbitrary(u)?,
@@ -1335,7 +1347,7 @@ impl<'a> Arbitrary<'a> for Label {
 }
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Lifetime {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(Lifetime {
             apostrophe: Arbitrary::arbitrary(u)?,
             ident: Arbitrary::arbitrary(u)?,
@@ -1345,7 +1357,7 @@ impl<'a> Arbitrary<'a> for Lifetime {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for LifetimeDef {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(LifetimeDef {
             attrs: Arbitrary::arbitrary(u)?,
             lifetime: Arbitrary::arbitrary(u)?,
@@ -1356,25 +1368,26 @@ impl<'a> Arbitrary<'a> for LifetimeDef {
 }
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Lit {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..8u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 8u64) >> 32;
             match index {
-                0u8 => Lit::Str(Arbitrary::arbitrary(u)?),
-                1u8 => Lit::ByteStr(Arbitrary::arbitrary(u)?),
-                2u8 => Lit::Byte(Arbitrary::arbitrary(u)?),
-                3u8 => Lit::Char(Arbitrary::arbitrary(u)?),
-                4u8 => Lit::Int(Arbitrary::arbitrary(u)?),
-                5u8 => Lit::Float(Arbitrary::arbitrary(u)?),
-                6u8 => Lit::Bool(Arbitrary::arbitrary(u)?),
-                7u8 => Lit::Verbatim(Arbitrary::arbitrary(u)?),
+                0u64 => Lit::Str(Arbitrary::arbitrary(u)?),
+                1u64 => Lit::ByteStr(Arbitrary::arbitrary(u)?),
+                2u64 => Lit::Byte(Arbitrary::arbitrary(u)?),
+                3u64 => Lit::Char(Arbitrary::arbitrary(u)?),
+                4u64 => Lit::Int(Arbitrary::arbitrary(u)?),
+                5u64 => Lit::Float(Arbitrary::arbitrary(u)?),
+                6u64 => Lit::Bool(Arbitrary::arbitrary(u)?),
+                7u64 => Lit::Verbatim(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
 }
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for LitBool {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(LitBool {
             value: Arbitrary::arbitrary(u)?,
             span: Arbitrary::arbitrary(u)?,
@@ -1384,7 +1397,7 @@ impl<'a> Arbitrary<'a> for LitBool {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Local {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(Local {
             attrs: Arbitrary::arbitrary(u)?,
             let_token: Arbitrary::arbitrary(u)?,
@@ -1397,7 +1410,7 @@ impl<'a> Arbitrary<'a> for Local {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Macro {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(Macro {
             path: Arbitrary::arbitrary(u)?,
             bang_token: Arbitrary::arbitrary(u)?,
@@ -1409,13 +1422,14 @@ impl<'a> Arbitrary<'a> for Macro {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for MacroDelimiter {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..3u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 3u64) >> 32;
             match index {
-                0u8 => MacroDelimiter::Paren(Arbitrary::arbitrary(u)?),
-                1u8 => MacroDelimiter::Brace(Arbitrary::arbitrary(u)?),
-                2u8 => MacroDelimiter::Bracket(Arbitrary::arbitrary(u)?),
+                0u64 => MacroDelimiter::Paren(Arbitrary::arbitrary(u)?),
+                1u64 => MacroDelimiter::Brace(Arbitrary::arbitrary(u)?),
+                2u64 => MacroDelimiter::Bracket(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -1423,12 +1437,13 @@ impl<'a> Arbitrary<'a> for MacroDelimiter {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Member {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..2u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 2u64) >> 32;
             match index {
-                0u8 => Member::Named(Arbitrary::arbitrary(u)?),
-                1u8 => Member::Unnamed(Arbitrary::arbitrary(u)?),
+                0u64 => Member::Named(Arbitrary::arbitrary(u)?),
+                1u64 => Member::Unnamed(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -1436,13 +1451,14 @@ impl<'a> Arbitrary<'a> for Member {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Meta {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..3u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 3u64) >> 32;
             match index {
-                0u8 => Meta::Path(Arbitrary::arbitrary(u)?),
-                1u8 => Meta::List(Arbitrary::arbitrary(u)?),
-                2u8 => Meta::NameValue(Arbitrary::arbitrary(u)?),
+                0u64 => Meta::Path(Arbitrary::arbitrary(u)?),
+                1u64 => Meta::List(Arbitrary::arbitrary(u)?),
+                2u64 => Meta::NameValue(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -1450,7 +1466,7 @@ impl<'a> Arbitrary<'a> for Meta {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for MetaList {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(MetaList {
             path: Arbitrary::arbitrary(u)?,
             paren_token: Arbitrary::arbitrary(u)?,
@@ -1461,7 +1477,7 @@ impl<'a> Arbitrary<'a> for MetaList {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for MetaNameValue {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(MetaNameValue {
             path: Arbitrary::arbitrary(u)?,
             eq_token: Arbitrary::arbitrary(u)?,
@@ -1472,7 +1488,7 @@ impl<'a> Arbitrary<'a> for MetaNameValue {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for MethodTurbofish {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(MethodTurbofish {
             colon2_token: Arbitrary::arbitrary(u)?,
             lt_token: Arbitrary::arbitrary(u)?,
@@ -1484,12 +1500,13 @@ impl<'a> Arbitrary<'a> for MethodTurbofish {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for NestedMeta {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..2u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 2u64) >> 32;
             match index {
-                0u8 => NestedMeta::Meta(Arbitrary::arbitrary(u)?),
-                1u8 => NestedMeta::Lit(Arbitrary::arbitrary(u)?),
+                0u64 => NestedMeta::Meta(Arbitrary::arbitrary(u)?),
+                1u64 => NestedMeta::Lit(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -1497,7 +1514,7 @@ impl<'a> Arbitrary<'a> for NestedMeta {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ParenthesizedGenericArguments {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(ParenthesizedGenericArguments {
             paren_token: Arbitrary::arbitrary(u)?,
             inputs: Arbitrary::arbitrary(u)?,
@@ -1508,26 +1525,27 @@ impl<'a> Arbitrary<'a> for ParenthesizedGenericArguments {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Pat {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..16u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 16u64) >> 32;
             match index {
-                0u8 => Pat::Box(Arbitrary::arbitrary(u)?),
-                1u8 => Pat::Ident(Arbitrary::arbitrary(u)?),
-                2u8 => Pat::Lit(Arbitrary::arbitrary(u)?),
-                3u8 => Pat::Macro(Arbitrary::arbitrary(u)?),
-                4u8 => Pat::Or(Arbitrary::arbitrary(u)?),
-                5u8 => Pat::Path(Arbitrary::arbitrary(u)?),
-                6u8 => Pat::Range(Arbitrary::arbitrary(u)?),
-                7u8 => Pat::Reference(Arbitrary::arbitrary(u)?),
-                8u8 => Pat::Rest(Arbitrary::arbitrary(u)?),
-                9u8 => Pat::Slice(Arbitrary::arbitrary(u)?),
-                10u8 => Pat::Struct(Arbitrary::arbitrary(u)?),
-                11u8 => Pat::Tuple(Arbitrary::arbitrary(u)?),
-                12u8 => Pat::TupleStruct(Arbitrary::arbitrary(u)?),
-                13u8 => Pat::Type(Arbitrary::arbitrary(u)?),
-                14u8 => Pat::Verbatim(Arbitrary::arbitrary(u)?),
-                15u8 => Pat::Wild(Arbitrary::arbitrary(u)?),
+                0u64 => Pat::Box(Arbitrary::arbitrary(u)?),
+                1u64 => Pat::Ident(Arbitrary::arbitrary(u)?),
+                2u64 => Pat::Lit(Arbitrary::arbitrary(u)?),
+                3u64 => Pat::Macro(Arbitrary::arbitrary(u)?),
+                4u64 => Pat::Or(Arbitrary::arbitrary(u)?),
+                5u64 => Pat::Path(Arbitrary::arbitrary(u)?),
+                6u64 => Pat::Range(Arbitrary::arbitrary(u)?),
+                7u64 => Pat::Reference(Arbitrary::arbitrary(u)?),
+                8u64 => Pat::Rest(Arbitrary::arbitrary(u)?),
+                9u64 => Pat::Slice(Arbitrary::arbitrary(u)?),
+                10u64 => Pat::Struct(Arbitrary::arbitrary(u)?),
+                11u64 => Pat::Tuple(Arbitrary::arbitrary(u)?),
+                12u64 => Pat::TupleStruct(Arbitrary::arbitrary(u)?),
+                13u64 => Pat::Type(Arbitrary::arbitrary(u)?),
+                14u64 => Pat::Verbatim(Arbitrary::arbitrary(u)?),
+                15u64 => Pat::Wild(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -1535,7 +1553,7 @@ impl<'a> Arbitrary<'a> for Pat {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for PatBox {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(PatBox {
             attrs: Arbitrary::arbitrary(u)?,
             box_token: Arbitrary::arbitrary(u)?,
@@ -1546,7 +1564,7 @@ impl<'a> Arbitrary<'a> for PatBox {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for PatIdent {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(PatIdent {
             attrs: Arbitrary::arbitrary(u)?,
             by_ref: Arbitrary::arbitrary(u)?,
@@ -1559,7 +1577,7 @@ impl<'a> Arbitrary<'a> for PatIdent {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for PatLit {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(PatLit {
             attrs: Arbitrary::arbitrary(u)?,
             expr: Arbitrary::arbitrary(u)?,
@@ -1569,7 +1587,7 @@ impl<'a> Arbitrary<'a> for PatLit {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for PatMacro {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(PatMacro {
             attrs: Arbitrary::arbitrary(u)?,
             mac: Arbitrary::arbitrary(u)?,
@@ -1579,7 +1597,7 @@ impl<'a> Arbitrary<'a> for PatMacro {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for PatOr {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(PatOr {
             attrs: Arbitrary::arbitrary(u)?,
             leading_vert: Arbitrary::arbitrary(u)?,
@@ -1590,7 +1608,7 @@ impl<'a> Arbitrary<'a> for PatOr {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for PatPath {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(PatPath {
             attrs: Arbitrary::arbitrary(u)?,
             qself: Arbitrary::arbitrary(u)?,
@@ -1601,7 +1619,7 @@ impl<'a> Arbitrary<'a> for PatPath {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for PatRange {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(PatRange {
             attrs: Arbitrary::arbitrary(u)?,
             lo: Arbitrary::arbitrary(u)?,
@@ -1613,7 +1631,7 @@ impl<'a> Arbitrary<'a> for PatRange {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for PatReference {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(PatReference {
             attrs: Arbitrary::arbitrary(u)?,
             and_token: Arbitrary::arbitrary(u)?,
@@ -1625,7 +1643,7 @@ impl<'a> Arbitrary<'a> for PatReference {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for PatRest {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(PatRest {
             attrs: Arbitrary::arbitrary(u)?,
             dot2_token: Arbitrary::arbitrary(u)?,
@@ -1635,7 +1653,7 @@ impl<'a> Arbitrary<'a> for PatRest {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for PatSlice {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(PatSlice {
             attrs: Arbitrary::arbitrary(u)?,
             bracket_token: Arbitrary::arbitrary(u)?,
@@ -1646,7 +1664,7 @@ impl<'a> Arbitrary<'a> for PatSlice {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for PatStruct {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(PatStruct {
             attrs: Arbitrary::arbitrary(u)?,
             path: Arbitrary::arbitrary(u)?,
@@ -1659,7 +1677,7 @@ impl<'a> Arbitrary<'a> for PatStruct {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for PatTuple {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(PatTuple {
             attrs: Arbitrary::arbitrary(u)?,
             paren_token: Arbitrary::arbitrary(u)?,
@@ -1670,7 +1688,7 @@ impl<'a> Arbitrary<'a> for PatTuple {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for PatTupleStruct {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(PatTupleStruct {
             attrs: Arbitrary::arbitrary(u)?,
             path: Arbitrary::arbitrary(u)?,
@@ -1681,7 +1699,7 @@ impl<'a> Arbitrary<'a> for PatTupleStruct {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for PatType {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(PatType {
             attrs: Arbitrary::arbitrary(u)?,
             pat: Arbitrary::arbitrary(u)?,
@@ -1693,7 +1711,7 @@ impl<'a> Arbitrary<'a> for PatType {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for PatWild {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(PatWild {
             attrs: Arbitrary::arbitrary(u)?,
             underscore_token: Arbitrary::arbitrary(u)?,
@@ -1703,7 +1721,7 @@ impl<'a> Arbitrary<'a> for PatWild {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Path {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(Path {
             leading_colon: Arbitrary::arbitrary(u)?,
             segments: Arbitrary::arbitrary(u)?,
@@ -1713,13 +1731,14 @@ impl<'a> Arbitrary<'a> for Path {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for PathArguments {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..3u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 3u64) >> 32;
             match index {
-                0u8 => PathArguments::None,
-                1u8 => PathArguments::AngleBracketed(Arbitrary::arbitrary(u)?),
-                2u8 => PathArguments::Parenthesized(Arbitrary::arbitrary(u)?),
+                0u64 => PathArguments::None,
+                1u64 => PathArguments::AngleBracketed(Arbitrary::arbitrary(u)?),
+                2u64 => PathArguments::Parenthesized(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -1727,7 +1746,7 @@ impl<'a> Arbitrary<'a> for PathArguments {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for PathSegment {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(PathSegment {
             ident: Arbitrary::arbitrary(u)?,
             arguments: Arbitrary::arbitrary(u)?,
@@ -1737,7 +1756,7 @@ impl<'a> Arbitrary<'a> for PathSegment {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for PredicateEq {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(PredicateEq {
             lhs_ty: Arbitrary::arbitrary(u)?,
             eq_token: Arbitrary::arbitrary(u)?,
@@ -1748,7 +1767,7 @@ impl<'a> Arbitrary<'a> for PredicateEq {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for PredicateLifetime {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(PredicateLifetime {
             lifetime: Arbitrary::arbitrary(u)?,
             colon_token: Arbitrary::arbitrary(u)?,
@@ -1759,7 +1778,7 @@ impl<'a> Arbitrary<'a> for PredicateLifetime {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for PredicateType {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(PredicateType {
             lifetimes: Arbitrary::arbitrary(u)?,
             bounded_ty: Arbitrary::arbitrary(u)?,
@@ -1771,7 +1790,7 @@ impl<'a> Arbitrary<'a> for PredicateType {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for QSelf {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(QSelf {
             lt_token: Arbitrary::arbitrary(u)?,
             ty: Arbitrary::arbitrary(u)?,
@@ -1784,12 +1803,13 @@ impl<'a> Arbitrary<'a> for QSelf {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for RangeLimits {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..2u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 2u64) >> 32;
             match index {
-                0u8 => RangeLimits::HalfOpen(Arbitrary::arbitrary(u)?),
-                1u8 => RangeLimits::Closed(Arbitrary::arbitrary(u)?),
+                0u64 => RangeLimits::HalfOpen(Arbitrary::arbitrary(u)?),
+                1u64 => RangeLimits::Closed(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -1797,7 +1817,7 @@ impl<'a> Arbitrary<'a> for RangeLimits {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Receiver {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(Receiver {
             attrs: Arbitrary::arbitrary(u)?,
             reference: Arbitrary::arbitrary(u)?,
@@ -1809,14 +1829,15 @@ impl<'a> Arbitrary<'a> for Receiver {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for ReturnType {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..2u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 2u64) >> 32;
             match index {
-                0u8 => ReturnType::Default,
-                1u8 => {
+                0u64 => ReturnType::Default,
+                1u64 => {
                     ReturnType::Type(Arbitrary::arbitrary(u)?, Arbitrary::arbitrary(u)?)
                 }
+                _ => unreachable!(),
             }
         })
     }
@@ -1824,7 +1845,7 @@ impl<'a> Arbitrary<'a> for ReturnType {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Signature {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(Signature {
             constness: Arbitrary::arbitrary(u)?,
             asyncness: Arbitrary::arbitrary(u)?,
@@ -1843,14 +1864,15 @@ impl<'a> Arbitrary<'a> for Signature {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Stmt {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..4u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 4u64) >> 32;
             match index {
-                0u8 => Stmt::Local(Arbitrary::arbitrary(u)?),
-                1u8 => Stmt::Item(Arbitrary::arbitrary(u)?),
-                2u8 => Stmt::Expr(Arbitrary::arbitrary(u)?),
-                3u8 => Stmt::Semi(Arbitrary::arbitrary(u)?, Arbitrary::arbitrary(u)?),
+                0u64 => Stmt::Local(Arbitrary::arbitrary(u)?),
+                1u64 => Stmt::Item(Arbitrary::arbitrary(u)?),
+                2u64 => Stmt::Expr(Arbitrary::arbitrary(u)?),
+                3u64 => Stmt::Semi(Arbitrary::arbitrary(u)?, Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -1858,7 +1880,7 @@ impl<'a> Arbitrary<'a> for Stmt {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TraitBound {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(TraitBound {
             paren_token: Arbitrary::arbitrary(u)?,
             modifier: Arbitrary::arbitrary(u)?,
@@ -1870,12 +1892,13 @@ impl<'a> Arbitrary<'a> for TraitBound {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TraitBoundModifier {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..2u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 2u64) >> 32;
             match index {
-                0u8 => TraitBoundModifier::None,
-                1u8 => TraitBoundModifier::Maybe(Arbitrary::arbitrary(u)?),
+                0u64 => TraitBoundModifier::None,
+                1u64 => TraitBoundModifier::Maybe(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -1883,15 +1906,16 @@ impl<'a> Arbitrary<'a> for TraitBoundModifier {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TraitItem {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..5u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 5u64) >> 32;
             match index {
-                0u8 => TraitItem::Const(Arbitrary::arbitrary(u)?),
-                1u8 => TraitItem::Method(Arbitrary::arbitrary(u)?),
-                2u8 => TraitItem::Type(Arbitrary::arbitrary(u)?),
-                3u8 => TraitItem::Macro(Arbitrary::arbitrary(u)?),
-                4u8 => TraitItem::Verbatim(Arbitrary::arbitrary(u)?),
+                0u64 => TraitItem::Const(Arbitrary::arbitrary(u)?),
+                1u64 => TraitItem::Method(Arbitrary::arbitrary(u)?),
+                2u64 => TraitItem::Type(Arbitrary::arbitrary(u)?),
+                3u64 => TraitItem::Macro(Arbitrary::arbitrary(u)?),
+                4u64 => TraitItem::Verbatim(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -1899,7 +1923,7 @@ impl<'a> Arbitrary<'a> for TraitItem {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TraitItemConst {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(TraitItemConst {
             attrs: Arbitrary::arbitrary(u)?,
             const_token: Arbitrary::arbitrary(u)?,
@@ -1914,7 +1938,7 @@ impl<'a> Arbitrary<'a> for TraitItemConst {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TraitItemMacro {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(TraitItemMacro {
             attrs: Arbitrary::arbitrary(u)?,
             mac: Arbitrary::arbitrary(u)?,
@@ -1925,7 +1949,7 @@ impl<'a> Arbitrary<'a> for TraitItemMacro {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TraitItemMethod {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(TraitItemMethod {
             attrs: Arbitrary::arbitrary(u)?,
             sig: Arbitrary::arbitrary(u)?,
@@ -1937,7 +1961,7 @@ impl<'a> Arbitrary<'a> for TraitItemMethod {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TraitItemType {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(TraitItemType {
             attrs: Arbitrary::arbitrary(u)?,
             type_token: Arbitrary::arbitrary(u)?,
@@ -1953,25 +1977,26 @@ impl<'a> Arbitrary<'a> for TraitItemType {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Type {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..15u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 15u64) >> 32;
             match index {
-                0u8 => Type::Array(Arbitrary::arbitrary(u)?),
-                1u8 => Type::BareFn(Arbitrary::arbitrary(u)?),
-                2u8 => Type::Group(Arbitrary::arbitrary(u)?),
-                3u8 => Type::ImplTrait(Arbitrary::arbitrary(u)?),
-                4u8 => Type::Infer(Arbitrary::arbitrary(u)?),
-                5u8 => Type::Macro(Arbitrary::arbitrary(u)?),
-                6u8 => Type::Never(Arbitrary::arbitrary(u)?),
-                7u8 => Type::Paren(Arbitrary::arbitrary(u)?),
-                8u8 => Type::Path(Arbitrary::arbitrary(u)?),
-                9u8 => Type::Ptr(Arbitrary::arbitrary(u)?),
-                10u8 => Type::Reference(Arbitrary::arbitrary(u)?),
-                11u8 => Type::Slice(Arbitrary::arbitrary(u)?),
-                12u8 => Type::TraitObject(Arbitrary::arbitrary(u)?),
-                13u8 => Type::Tuple(Arbitrary::arbitrary(u)?),
-                14u8 => Type::Verbatim(Arbitrary::arbitrary(u)?),
+                0u64 => Type::Array(Arbitrary::arbitrary(u)?),
+                1u64 => Type::BareFn(Arbitrary::arbitrary(u)?),
+                2u64 => Type::Group(Arbitrary::arbitrary(u)?),
+                3u64 => Type::ImplTrait(Arbitrary::arbitrary(u)?),
+                4u64 => Type::Infer(Arbitrary::arbitrary(u)?),
+                5u64 => Type::Macro(Arbitrary::arbitrary(u)?),
+                6u64 => Type::Never(Arbitrary::arbitrary(u)?),
+                7u64 => Type::Paren(Arbitrary::arbitrary(u)?),
+                8u64 => Type::Path(Arbitrary::arbitrary(u)?),
+                9u64 => Type::Ptr(Arbitrary::arbitrary(u)?),
+                10u64 => Type::Reference(Arbitrary::arbitrary(u)?),
+                11u64 => Type::Slice(Arbitrary::arbitrary(u)?),
+                12u64 => Type::TraitObject(Arbitrary::arbitrary(u)?),
+                13u64 => Type::Tuple(Arbitrary::arbitrary(u)?),
+                14u64 => Type::Verbatim(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -1979,7 +2004,7 @@ impl<'a> Arbitrary<'a> for Type {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TypeArray {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(TypeArray {
             bracket_token: Arbitrary::arbitrary(u)?,
             elem: Arbitrary::arbitrary(u)?,
@@ -1991,7 +2016,7 @@ impl<'a> Arbitrary<'a> for TypeArray {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TypeBareFn {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(TypeBareFn {
             lifetimes: Arbitrary::arbitrary(u)?,
             unsafety: Arbitrary::arbitrary(u)?,
@@ -2007,7 +2032,7 @@ impl<'a> Arbitrary<'a> for TypeBareFn {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TypeGroup {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(TypeGroup {
             group_token: Arbitrary::arbitrary(u)?,
             elem: Arbitrary::arbitrary(u)?,
@@ -2017,7 +2042,7 @@ impl<'a> Arbitrary<'a> for TypeGroup {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TypeImplTrait {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(TypeImplTrait {
             impl_token: Arbitrary::arbitrary(u)?,
             bounds: Arbitrary::arbitrary(u)?,
@@ -2027,7 +2052,7 @@ impl<'a> Arbitrary<'a> for TypeImplTrait {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TypeInfer {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(TypeInfer {
             underscore_token: Arbitrary::arbitrary(u)?,
         })
@@ -2036,7 +2061,7 @@ impl<'a> Arbitrary<'a> for TypeInfer {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TypeMacro {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(TypeMacro {
             mac: Arbitrary::arbitrary(u)?,
         })
@@ -2045,7 +2070,7 @@ impl<'a> Arbitrary<'a> for TypeMacro {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TypeNever {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(TypeNever {
             bang_token: Arbitrary::arbitrary(u)?,
         })
@@ -2054,7 +2079,7 @@ impl<'a> Arbitrary<'a> for TypeNever {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TypeParam {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(TypeParam {
             attrs: Arbitrary::arbitrary(u)?,
             ident: Arbitrary::arbitrary(u)?,
@@ -2068,12 +2093,13 @@ impl<'a> Arbitrary<'a> for TypeParam {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TypeParamBound {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..2u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 2u64) >> 32;
             match index {
-                0u8 => TypeParamBound::Trait(Arbitrary::arbitrary(u)?),
-                1u8 => TypeParamBound::Lifetime(Arbitrary::arbitrary(u)?),
+                0u64 => TypeParamBound::Trait(Arbitrary::arbitrary(u)?),
+                1u64 => TypeParamBound::Lifetime(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -2081,7 +2107,7 @@ impl<'a> Arbitrary<'a> for TypeParamBound {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TypeParen {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(TypeParen {
             paren_token: Arbitrary::arbitrary(u)?,
             elem: Arbitrary::arbitrary(u)?,
@@ -2091,7 +2117,7 @@ impl<'a> Arbitrary<'a> for TypeParen {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TypePath {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(TypePath {
             qself: Arbitrary::arbitrary(u)?,
             path: Arbitrary::arbitrary(u)?,
@@ -2101,7 +2127,7 @@ impl<'a> Arbitrary<'a> for TypePath {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TypePtr {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(TypePtr {
             star_token: Arbitrary::arbitrary(u)?,
             const_token: Arbitrary::arbitrary(u)?,
@@ -2113,7 +2139,7 @@ impl<'a> Arbitrary<'a> for TypePtr {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TypeReference {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(TypeReference {
             and_token: Arbitrary::arbitrary(u)?,
             lifetime: Arbitrary::arbitrary(u)?,
@@ -2125,7 +2151,7 @@ impl<'a> Arbitrary<'a> for TypeReference {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TypeSlice {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(TypeSlice {
             bracket_token: Arbitrary::arbitrary(u)?,
             elem: Arbitrary::arbitrary(u)?,
@@ -2135,7 +2161,7 @@ impl<'a> Arbitrary<'a> for TypeSlice {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TypeTraitObject {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(TypeTraitObject {
             dyn_token: Arbitrary::arbitrary(u)?,
             bounds: Arbitrary::arbitrary(u)?,
@@ -2145,7 +2171,7 @@ impl<'a> Arbitrary<'a> for TypeTraitObject {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for TypeTuple {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(TypeTuple {
             paren_token: Arbitrary::arbitrary(u)?,
             elems: Arbitrary::arbitrary(u)?,
@@ -2155,13 +2181,14 @@ impl<'a> Arbitrary<'a> for TypeTuple {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for UnOp {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..3u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 3u64) >> 32;
             match index {
-                0u8 => UnOp::Deref(Arbitrary::arbitrary(u)?),
-                1u8 => UnOp::Not(Arbitrary::arbitrary(u)?),
-                2u8 => UnOp::Neg(Arbitrary::arbitrary(u)?),
+                0u64 => UnOp::Deref(Arbitrary::arbitrary(u)?),
+                1u64 => UnOp::Not(Arbitrary::arbitrary(u)?),
+                2u64 => UnOp::Neg(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -2169,7 +2196,7 @@ impl<'a> Arbitrary<'a> for UnOp {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for UseGlob {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(UseGlob {
             star_token: Arbitrary::arbitrary(u)?,
         })
@@ -2178,7 +2205,7 @@ impl<'a> Arbitrary<'a> for UseGlob {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for UseGroup {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(UseGroup {
             brace_token: Arbitrary::arbitrary(u)?,
             items: Arbitrary::arbitrary(u)?,
@@ -2188,7 +2215,7 @@ impl<'a> Arbitrary<'a> for UseGroup {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for UseName {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(UseName {
             ident: Arbitrary::arbitrary(u)?,
         })
@@ -2197,7 +2224,7 @@ impl<'a> Arbitrary<'a> for UseName {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for UsePath {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(UsePath {
             ident: Arbitrary::arbitrary(u)?,
             colon2_token: Arbitrary::arbitrary(u)?,
@@ -2208,7 +2235,7 @@ impl<'a> Arbitrary<'a> for UsePath {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for UseRename {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(UseRename {
             ident: Arbitrary::arbitrary(u)?,
             as_token: Arbitrary::arbitrary(u)?,
@@ -2219,15 +2246,16 @@ impl<'a> Arbitrary<'a> for UseRename {
 #[cfg(feature = "full")]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for UseTree {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..5u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 5u64) >> 32;
             match index {
-                0u8 => UseTree::Path(Arbitrary::arbitrary(u)?),
-                1u8 => UseTree::Name(Arbitrary::arbitrary(u)?),
-                2u8 => UseTree::Rename(Arbitrary::arbitrary(u)?),
-                3u8 => UseTree::Glob(Arbitrary::arbitrary(u)?),
-                4u8 => UseTree::Group(Arbitrary::arbitrary(u)?),
+                0u64 => UseTree::Path(Arbitrary::arbitrary(u)?),
+                1u64 => UseTree::Name(Arbitrary::arbitrary(u)?),
+                2u64 => UseTree::Rename(Arbitrary::arbitrary(u)?),
+                3u64 => UseTree::Glob(Arbitrary::arbitrary(u)?),
+                4u64 => UseTree::Group(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }
@@ -2235,7 +2263,7 @@ impl<'a> Arbitrary<'a> for UseTree {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Variadic {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(Variadic {
             attrs: Arbitrary::arbitrary(u)?,
             dots: Arbitrary::arbitrary(u)?,
@@ -2245,7 +2273,7 @@ impl<'a> Arbitrary<'a> for Variadic {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Variant {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(Variant {
             attrs: Arbitrary::arbitrary(u)?,
             ident: Arbitrary::arbitrary(u)?,
@@ -2257,7 +2285,7 @@ impl<'a> Arbitrary<'a> for Variant {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for VisCrate {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(VisCrate {
             crate_token: Arbitrary::arbitrary(u)?,
         })
@@ -2266,7 +2294,7 @@ impl<'a> Arbitrary<'a> for VisCrate {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for VisPublic {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(VisPublic {
             pub_token: Arbitrary::arbitrary(u)?,
         })
@@ -2275,7 +2303,7 @@ impl<'a> Arbitrary<'a> for VisPublic {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for VisRestricted {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(VisRestricted {
             pub_token: Arbitrary::arbitrary(u)?,
             paren_token: Arbitrary::arbitrary(u)?,
@@ -2287,14 +2315,15 @@ impl<'a> Arbitrary<'a> for VisRestricted {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for Visibility {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..4u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 4u64) >> 32;
             match index {
-                0u8 => Visibility::Public(Arbitrary::arbitrary(u)?),
-                1u8 => Visibility::Crate(Arbitrary::arbitrary(u)?),
-                2u8 => Visibility::Restricted(Arbitrary::arbitrary(u)?),
-                3u8 => Visibility::Inherited,
+                0u64 => Visibility::Public(Arbitrary::arbitrary(u)?),
+                1u64 => Visibility::Crate(Arbitrary::arbitrary(u)?),
+                2u64 => Visibility::Restricted(Arbitrary::arbitrary(u)?),
+                3u64 => Visibility::Inherited,
+                _ => unreachable!(),
             }
         })
     }
@@ -2302,7 +2331,7 @@ impl<'a> Arbitrary<'a> for Visibility {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for WhereClause {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok(WhereClause {
             where_token: Arbitrary::arbitrary(u)?,
             predicates: Arbitrary::arbitrary(u)?,
@@ -2312,13 +2341,14 @@ impl<'a> Arbitrary<'a> for WhereClause {
 #[cfg(any(feature = "derive", feature = "full"))]
 #[cfg_attr(doc_cfg, doc(cfg(feature = "arbitrary")))]
 impl<'a> Arbitrary<'a> for WherePredicate {
-    fn arbitrary(u: &mut Unstructured<'a>) -> Result<Self> {
+    fn arbitrary(u: &mut Unstructured<'a>) -> arbitrary::Result<Self> {
         Ok({
-            let index = (0..3u8).arbitrary(u)?;
+            let index = (u64::from(u32::arbitrary(u)?) * 3u64) >> 32;
             match index {
-                0u8 => WherePredicate::Type(Arbitrary::arbitrary(u)?),
-                1u8 => WherePredicate::Lifetime(Arbitrary::arbitrary(u)?),
-                2u8 => WherePredicate::Eq(Arbitrary::arbitrary(u)?),
+                0u64 => WherePredicate::Type(Arbitrary::arbitrary(u)?),
+                1u64 => WherePredicate::Lifetime(Arbitrary::arbitrary(u)?),
+                2u64 => WherePredicate::Eq(Arbitrary::arbitrary(u)?),
+                _ => unreachable!(),
             }
         })
     }

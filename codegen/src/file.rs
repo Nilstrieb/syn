@@ -13,7 +13,7 @@ pub fn write<P: AsRef<Path>>(path: P, content: TokenStream) -> Result<()> {
     writeln!(formatted, "// It is not intended for manual editing.")?;
     writeln!(formatted)?;
 
-    let syntax_tree: syn::File = syn::parse2(content).unwrap();
+    let syntax_tree: syn::File = syn::parse2(content)?;
     let pretty = prettyplease::unparse(&syntax_tree);
     write!(formatted, "{}", pretty)?;
 

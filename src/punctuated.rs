@@ -43,6 +43,7 @@ use crate::token::Token;
 /// Refer to the [module documentation] for details about punctuated sequences.
 ///
 /// [module documentation]: self
+#[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
 pub struct Punctuated<T, P> {
     inner: Vec<(T, P)>,
     last: Option<Box<T>>,

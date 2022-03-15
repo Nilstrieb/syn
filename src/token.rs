@@ -336,6 +336,13 @@ macro_rules! define_keywords {
 
             #[cfg(feature = "parsing")]
             impl private::Sealed for $name {}
+
+            #[cfg(feature = "arbitrary")]
+            impl<'a> arbitrary::Arbitrary<'a> for $name {
+                fn arbitrary(u: &mut arbitrary::Unstructured<'a>) -> arbitrary::Result<Self> {
+                    Ok(Self { span: Span::call_site() })
+                }
+            }
         )*
     };
 }
@@ -426,6 +433,13 @@ macro_rules! define_punctuation_structs {
             #[cfg_attr(doc_cfg, doc(cfg(feature = "extra-traits")))]
             impl Hash for $name {
                 fn hash<H: Hasher>(&self, _state: &mut H) {}
+            }
+
+            #[cfg(feature = "arbitrary")]
+            impl<'a> arbitrary::Arbitrary<'a> for $name {
+                fn arbitrary(u: &mut arbitrary::Unstructured<'a>) -> arbitrary::Result<Self> {
+                    Ok(Self { spans: [Span::call_site()] })
+                }
             }
 
             impl_deref_if_len_is_1!($name/$len);
